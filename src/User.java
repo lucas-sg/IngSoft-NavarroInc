@@ -1,7 +1,7 @@
 
 
 
-public class User {
+abstract class User {
     private String name;
     private String password;
     private String surname;

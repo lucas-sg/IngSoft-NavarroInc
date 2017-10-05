@@ -1,6 +1,7 @@
-
+import java.util.List;
 
 public class Seller extends User {
+    private List<Item> itemList;
     private Integer stars;
     private String category;
     //agregar foto y id
@@ -12,6 +13,7 @@ public class Seller extends User {
         super(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
                 telphoneType, docType);
     }
+
 
 
 }
