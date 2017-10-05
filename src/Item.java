@@ -11,6 +11,4 @@ public class Item {
     private Integer itemid;
     private Integer gallery;
 
-
-
 }
