@@ -1,3 +1,5 @@
+package mercadoNavarro;
+
 import java.util.List;
 
 public class Seller extends User {

@@ -1,4 +1,4 @@
-
+package mercadoNavarro;
 
 public class Sale {
     private Integer saled;

@@ -1,3 +1,4 @@
+package mercadoNavarro;
 
 public class Buyer extends User {
 
