@@ -23,16 +23,17 @@ public class ImageManager {
         return uniqueInstance;
     }
 
-    public static boolean createImage(String base64) {
-
+    public static String createImage(String base64) {
+        String file = null;
         try {
             byte[] decoded = decoder.decodeBuffer(base64);
-            FileOutputStream outputFile = new FileOutputStream(getNextFileName());
+            file = getNextFileName();
+            FileOutputStream outputFile = new FileOutputStream(file);
             outputFile.write(decoded);
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
         }
-        return true;
+        return file;
     }
 
     public static String encodeImage(String path) {
