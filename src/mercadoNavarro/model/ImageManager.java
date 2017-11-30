@@ -29,7 +29,7 @@ public class ImageManager {
             for (File file: f.listFiles()) {
                 if(file.getName().contains(".jpg")) {
                     existingPhotos.put(encodeImage(file.getPath()), file.getPath());
-                    number++;
+                    number = Integer.parseInt(file.getName().replace(".jpg", "")) + 1;
                 }
             }
         }

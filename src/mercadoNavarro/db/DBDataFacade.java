@@ -333,6 +333,12 @@ public class DBDataFacade {
         return ret;
     }
 
+    public static boolean addComment(String comment, int itemId) {
+        List<String> list = new LinkedList<>();
+        list.add(comment);
+        return addComments(list, itemId);
+    }
+
     private static List<String> getComments(int articleId) {
 
         List<String> comments = new LinkedList<>();
@@ -453,7 +459,8 @@ public class DBDataFacade {
         }
 
         if (db.connect()) {
-            ResultSet result = db.query("select * from articles where item_name like '%" + search + "%' " + sorting);
+            ResultSet result = db.query("select articleid, sellerid, item_name, description, stock, pickup, price, stars from articles natural join sellers where item_name " +
+                    "like '%" + search + "%' " + sorting);
             try {
                 while(result.next()) {
                     if(!db.isConnected())
