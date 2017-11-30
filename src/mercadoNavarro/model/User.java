@@ -1,10 +1,9 @@
-package mercadoNavarro;
-
+package mercadoNavarro.model;
 
 import mercadoNavarro.enums.DocumentType;
 import mercadoNavarro.enums.PhoneType;
 
-abstract class User {
+public abstract class User {
     private String name;
     private String password;
     private String surname;
@@ -17,13 +16,13 @@ abstract class User {
     private Integer zipCode;
     private String telephone;
     private String docNumber;
-    private PhoneType telphoneType;
+    private PhoneType telephoneType;
     private DocumentType docType;
     private boolean isEnabled;
 
     public User(String name, String password, String surname, String eMail, String country, String province,
                 String city, String street, Integer number, Integer zipCode, String telephone, String docNumber,
-                PhoneType telphoneType, DocumentType docType) {
+                PhoneType telephoneType, DocumentType docType) {
         this.name = name;
         this.password = password;
         this.surname = surname;
@@ -36,17 +35,17 @@ abstract class User {
         this.zipCode = zipCode;
         this.telephone = telephone;
         this.docNumber = docNumber;
-        this.telphoneType = telphoneType;
+        this.telephoneType = telephoneType;
         this.docType = docType;
         this.isEnabled = true;
     }
 
-    public String getTelphoneType() {
-        return telphoneType.toString();
+    public String getTelephoneType() {
+        return telephoneType.toString();
     }
 
-    public void setTelphoneType(PhoneType telphoneType) {
-        this.telphoneType = telphoneType;
+    public void setTelephoneType(PhoneType telephoneType) {
+        this.telephoneType = telephoneType;
     }
 
     public String getDocType() {

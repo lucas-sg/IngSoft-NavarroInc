@@ -1,4 +1,4 @@
-package mercadoNavarro;
+package mercadoNavarro.model;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;

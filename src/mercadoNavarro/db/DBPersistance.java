@@ -1,4 +1,4 @@
-package mercadoNavarro;
+package mercadoNavarro.db;
 
 import java.sql.*;
 

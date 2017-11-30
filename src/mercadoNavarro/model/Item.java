@@ -1,4 +1,4 @@
-package mercadoNavarro;
+package mercadoNavarro.model;
 
 import java.util.List;
 

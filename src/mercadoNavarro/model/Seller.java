@@ -1,4 +1,4 @@
-package mercadoNavarro;
+package mercadoNavarro.model;
 
 import mercadoNavarro.enums.DocumentType;
 import mercadoNavarro.enums.PhoneType;
@@ -14,9 +14,9 @@ public class Seller extends User {
 
     public Seller(String name, String password, String surname, String eMail, String country, String province,
                   String city, String street, Integer number, Integer zipCode, String telephone, String docNumber,
-                  PhoneType telphoneType, DocumentType docType) {
+                  PhoneType telephoneType, DocumentType docType) {
         super(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
-                telphoneType, docType);
+                telephoneType, docType);
     }
 
     public List<Item> getItemList() {
