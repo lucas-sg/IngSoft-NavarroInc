@@ -12,7 +12,7 @@ public class Sale {
     }
     
     public Double getTotal() {
-    	return this.getTotal();
+    	return this.total;
     }
     
     public void setTotal(double total) {
