@@ -11,9 +11,9 @@ import java.util.List;
 
 public class DBDataFacade {
 
-    private DBPersistance db = DBPersistance.getInstance();
+    private static DBPersistance db = DBPersistance.getInstance();
 
-    public boolean addAdmin(Admin admin) {
+    public static boolean addAdmin(Admin admin) {
 
         boolean ret = false;
         if (db.connect()) {
@@ -23,7 +23,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public Admin getAdmin(String email) {
+    public static Admin getAdmin(String email) {
 
         Admin admin = null;
         if (db.connect()) {
@@ -42,7 +42,7 @@ public class DBDataFacade {
         return admin;
     }
 
-    public boolean deleteAdmin(Admin admin) {
+    public static boolean deleteAdmin(Admin admin) {
 
         boolean ret = false;
         if (db.connect()) {
@@ -52,7 +52,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public boolean addUser(User user) {
+    public static boolean addUser(User user) {
 
         boolean ret = false;
         if (db.connect()) {
@@ -66,7 +66,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public boolean addSeller(Seller seller) {
+    public static boolean addSeller(Seller seller) {
 
         boolean ret = false;
         ret = addUser(seller);
@@ -89,7 +89,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public User getUser(String email) {
+    public static User getUser(String email) {
 
         User user = null;
         if (db.connect()) {
@@ -140,7 +140,7 @@ public class DBDataFacade {
         return user;
     }
 
-    public boolean modifyUser(User user) {
+    public static boolean modifyUser(User user) {
 
         boolean ret = false;
         if (db.connect()) {
@@ -160,7 +160,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public boolean modifySeller(Seller seller) {
+    public static boolean modifySeller(Seller seller) {
 
         boolean ret = false;
         ret = modifyUser(seller);
@@ -196,7 +196,7 @@ public class DBDataFacade {
 
     }
 
-    public boolean deleteUser(User user) {
+    public static boolean deleteUser(User user) {
 
         boolean ret = false;
         if (db.connect()) {
@@ -206,7 +206,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public boolean addItem(Item item) {
+    public static boolean addItem(Item item) {
 
         boolean ret = false;
         int sellerid = 0;
@@ -243,7 +243,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public Item getItem(int itemId) {
+    public static Item getItem(int itemId) {
 
         Item item = null;
         if (db.connect()) {
@@ -272,7 +272,7 @@ public class DBDataFacade {
         return item;
     }
 
-    public boolean modifyItem(Item item) {
+    public static boolean modifyItem(Item item) {
 
         boolean ret = false;
         if (db.connect()) {
@@ -291,7 +291,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public boolean deleteItem(Item item) {
+    public static boolean deleteItem(Item item) {
 
         boolean ret = false;
         if (db.connect()) {
@@ -301,7 +301,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public boolean addComments(List<String> comments, int itemId) {
+    private static boolean addComments(List<String> comments, int itemId) {
 
         boolean ret = false;
         if (comments != null) {
@@ -315,7 +315,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public List<String> getComments(int articleId) {
+    private static List<String> getComments(int articleId) {
 
         List<String> comments = new LinkedList<>();
         if (db.connect()) {
@@ -331,7 +331,7 @@ public class DBDataFacade {
         return comments;
     }
 
-    public boolean modifyComments(LinkedList<String> comments, int articleId) {
+    private static boolean modifyComments(LinkedList<String> comments, int articleId) {
 
         boolean ret = false;
         if (comments != null) {
@@ -359,7 +359,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public boolean addPictures(List<String> photos, int itemId) {
+    private static boolean addPictures(List<String> photos, int itemId) {
 
         boolean ret = false;
         if (photos != null) {
@@ -373,7 +373,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public List<String> getPictures(int articleId) {
+    private static List<String> getPictures(int articleId) {
 
         List<String> pictures = new LinkedList<>();
         if (db.connect()) {
@@ -389,7 +389,7 @@ public class DBDataFacade {
         return pictures;
     }
 
-    public boolean modifyPictures(LinkedList<String> pictures, int articleId) {
+    private static boolean modifyPictures(LinkedList<String> pictures, int articleId) {
 
         boolean ret = false;
         if (pictures != null) {
@@ -417,7 +417,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public List<Item> getSearch(String search, Ordering orderBy) {
+    public static List<Item> getSearch(String search, Ordering orderBy) {
 
         List<Item> items = new LinkedList<>();
         switch (orderBy) {
