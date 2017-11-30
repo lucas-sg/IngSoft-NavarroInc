@@ -1,6 +1,9 @@
 package mercadoNavarro;
 
 
+import mercadoNavarro.enums.DocumentType;
+import mercadoNavarro.enums.PhoneType;
+
 abstract class User {
     private String name;
     private String password;
@@ -14,12 +17,13 @@ abstract class User {
     private Integer zipCode;
     private String telephone;
     private String docNumber;
-    private String telphoneType;
-    private String docType;
+    private PhoneType telphoneType;
+    private DocumentType docType;
+    private boolean isEnabled;
 
     public User(String name, String password, String surname, String eMail, String country, String province,
                 String city, String street, Integer number, Integer zipCode, String telephone, String docNumber,
-                String telphoneType, String docType) {
+                PhoneType telphoneType, DocumentType docType) {
         this.name = name;
         this.password = password;
         this.surname = surname;
@@ -34,21 +38,22 @@ abstract class User {
         this.docNumber = docNumber;
         this.telphoneType = telphoneType;
         this.docType = docType;
+        this.isEnabled = true;
     }
 
     public String getTelphoneType() {
-        return telphoneType;
+        return telphoneType.toString();
     }
 
-    public void setTelphoneType(String telphoneType) {
+    public void setTelphoneType(PhoneType telphoneType) {
         this.telphoneType = telphoneType;
     }
 
     public String getDocType() {
-        return docType;
+        return docType.toString();
     }
 
-    public void setDocType(String docType) {
+    public void setDocType(DocumentType docType) {
         this.docType = docType;
     }
 
@@ -140,5 +145,13 @@ abstract class User {
 
     public void setDocNumber(String docNumber) {
         this.docNumber = docNumber;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 }

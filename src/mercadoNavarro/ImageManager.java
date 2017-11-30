@@ -6,10 +6,13 @@ import sun.misc.IOUtils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ImageManager {
 
     private static int number = 1;
+    private static Map<byte[], String> existingPhotos = new HashMap<>();
     private static ImageManager uniqueInstance = new ImageManager();
     private static BASE64Encoder encoder;
     private static BASE64Decoder decoder;
@@ -27,9 +30,14 @@ public class ImageManager {
         String file = null;
         try {
             byte[] decoded = decoder.decodeBuffer(base64);
-            file = getNextFileName();
-            FileOutputStream outputFile = new FileOutputStream(file);
-            outputFile.write(decoded);
+            if(!existingPhotos.containsKey(decoded)) {
+                file = getNextFileName();
+                FileOutputStream outputFile = new FileOutputStream(file);
+                outputFile.write(decoded);
+                existingPhotos.put(decoded, file);
+            }
+            else
+                file = existingPhotos.get(decoded);
         } catch (Exception e) {
             e.printStackTrace();
         }
