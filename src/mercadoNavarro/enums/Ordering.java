@@ -2,5 +2,5 @@ package mercadoNavarro.enums;
 
 
 public enum Ordering {
-    LOWEST_PRICE, PICKUP, STARS
+    LOWEST_PRICE, PICKUP, STARS, DEFAULT
 }

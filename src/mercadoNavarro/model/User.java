@@ -13,7 +13,7 @@ public abstract class User {
     private String city;
     private String street;
     private Integer number;
-    private Integer zipCode;
+    private String zipCode;
     private String telephone;
     private String docNumber;
     private PhoneType telephoneType;
@@ -21,7 +21,7 @@ public abstract class User {
     private boolean isEnabled;
 
     public User(String name, String password, String surname, String eMail, String country, String province,
-                String city, String street, Integer number, Integer zipCode, String telephone, String docNumber,
+                String city, String street, Integer number, String zipCode, String telephone, String docNumber,
                 PhoneType telephoneType, DocumentType docType) {
         this.name = name;
         this.password = password;
@@ -121,11 +121,11 @@ public abstract class User {
         this.number = number;
     }
 
-    public Integer getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(Integer zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 
@@ -152,5 +152,20 @@ public abstract class User {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return eMail != null ? eMail.equals(user.eMail) : user.eMail == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return eMail != null ? eMail.hashCode() : 0;
     }
 }

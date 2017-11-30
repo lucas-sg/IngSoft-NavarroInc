@@ -4,6 +4,7 @@ import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 import sun.misc.IOUtils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.Map;
 public class ImageManager {
 
     private static int number = 1;
-    private static Map<byte[], String> existingPhotos = new HashMap<>();
+    private static Map<String, String> existingPhotos = new HashMap<>();
     private static ImageManager uniqueInstance = new ImageManager();
     private static BASE64Encoder encoder;
     private static BASE64Decoder decoder;
@@ -20,6 +21,18 @@ public class ImageManager {
     private ImageManager() {
         encoder = new BASE64Encoder();
         decoder = new BASE64Decoder();
+
+        File f = new File("./assets");
+        if(!f.exists())
+            f.mkdir();
+        else {
+            for (File file: f.listFiles()) {
+                if(file.getName().contains(".jpg")) {
+                    existingPhotos.put(encodeImage(file.getPath()), file.getPath());
+                    number++;
+                }
+            }
+        }
     }
 
     public ImageManager getInstance() {
@@ -30,14 +43,14 @@ public class ImageManager {
         String file = null;
         try {
             byte[] decoded = decoder.decodeBuffer(base64);
-            if(!existingPhotos.containsKey(decoded)) {
+            if(!existingPhotos.containsKey(base64)) {
                 file = getNextFileName();
                 FileOutputStream outputFile = new FileOutputStream(file);
                 outputFile.write(decoded);
-                existingPhotos.put(decoded, file);
+                existingPhotos.put(base64, file);
             }
             else
-                file = existingPhotos.get(decoded);
+                file = existingPhotos.get(base64);
         } catch (Exception e) {
             e.printStackTrace();
         }

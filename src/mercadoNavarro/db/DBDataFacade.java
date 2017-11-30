@@ -59,8 +59,8 @@ public class DBDataFacade {
         if (db.connect()) {
             ret = db.insert("into users(document, first_name, lastname, document_type, country, province, city, street, street_number, zip_code, phone, " +
                     "password, email, phone_type, enabled) values(" + user.getDocNumber() + ",'" + user.getName() + "','" + user.getSurname() + "','" + user.getDocType() +
-                    "','" + user.getCountry() + "','" + user.getProvince() + "','" + user.getCity() + "','" + user.getStreet() + "'," + user.getNumber() + "," +
-                    user.getZipCode() + ",'" + user.getTelephone() + "','" + user.getPassword() + "','" + user.geteMail() + "','" + user.getTelephoneType() + "'," +
+                    "','" + user.getCountry() + "','" + user.getProvince() + "','" + user.getCity() + "','" + user.getStreet() + "'," + user.getNumber() + ",'" +
+                    user.getZipCode() + "','" + user.getTelephone() + "','" + user.getPassword() + "','" + user.geteMail() + "','" + user.getTelephoneType() + "'," +
                     user.isEnabled() + ")");
             db.disconnect();
         }
@@ -107,7 +107,7 @@ public class DBDataFacade {
                 String city = result.getString("city");
                 String street = result.getString("street");
                 int number = result.getInt("street_number");
-                int zipCode = result.getInt("zip_code");
+                String zipCode = result.getString("zip_code");
                 String telephone = result.getString("phone");
                 String docNumber = result.getString("document");
                 String telphoneType = result.getString("phone_type");
@@ -151,8 +151,8 @@ public class DBDataFacade {
                 int id = result.getInt("userid");
                 ret = db.update("users set first_name = '" + user.getName() + "', lastname = '" + user.getSurname() + "', document_type = '" + user.getDocType() +
                         "', country = '" + user.getCountry() + "', province = '" + user.getProvince() + "', city = '" + user.getCity() + "', street = '" +
-                        user.getStreet() + "', street_number = " + user.getNumber() + ", zip_code = " + user.getZipCode() + ", phone = , '" + user.getTelephone() +
-                        "', phone_type = '" + user.getTelephoneType() + "' enabled = " + user.isEnabled() +" where userid =" + id);
+                        user.getStreet() + "', street_number = " + user.getNumber() + ", zip_code = '" + user.getZipCode() + "', phone = '" + user.getTelephone() +
+                        "', phone_type = '" + user.getTelephoneType() + "', enabled = " + user.isEnabled() +" where userid =" + id);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -175,11 +175,13 @@ public class DBDataFacade {
                 result.next();
                 int id = result.getInt("userid");
                 ResultSet items = db.query("select * from articles where sellerid = " + id);
-                ret &= db.update("sellers set category = '" + seller.getCategory() + "', set stars = " + seller.getStars() + ", set image = '" +
+                ret &= db.update("sellers set category = '" + seller.getCategory() + "', stars = " + seller.getStars() + ", image = '" +
                         ImageManager.encodeImage(seller.getPhoto()) + "' where sellerid = " + id);
                 while(items.next()) {
-                    int itemId = result.getInt("articleid");
+                    int itemId = items.getInt("articleid");
                     Item i = getItem(itemId);
+                    LinkedList<Item> list = (LinkedList<Item>) seller.getItemList();
+                    list.contains(i);
                     if(seller.getItemList().contains(i))
                         toAdd.remove(i);
                     else
@@ -255,28 +257,36 @@ public class DBDataFacade {
             ResultSet result = db.query("select * from articles where articleid = " + itemId);
             try {
                 if (result.next()) {
-                    int sellerId = result.getInt("sellerid");
-                    if(seller == null) {
-                        String sellerEmail = null;
-                        ResultSet sellerData = db.query("select email from users where userid = " + sellerId);
-                        if (sellerData.next())
-                            sellerEmail = sellerData.getString("email");
-                        seller = (Seller) getUser(sellerEmail);
-                    }
-                    String name = result.getString("item_name");
-                    String description = result.getString("description");
-                    String pickup = result.getString("pickup");
-                    int stock = result.getInt("stock");
-                    double price = result.getDouble("price");
-                    item = new Item(seller, name, description, stock, pickup, price, getPictures(itemId));
-                    item.setComments(getComments(itemId));
-                    item.setItemid(itemId);
+                    item = createItem(seller, result);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             db.disconnect();
         }
+        return item;
+    }
+
+    private static Item createItem(Seller seller, ResultSet result) throws SQLException{
+
+        Item item = null;
+        int itemId = result.getInt("articleid");
+        int sellerId = result.getInt("sellerid");
+        if(seller == null) {
+            String sellerEmail = null;
+            ResultSet sellerData = db.query("select email from users where userid = " + sellerId);
+            if (sellerData.next())
+                sellerEmail = sellerData.getString("email");
+            seller = (Seller) getUser(sellerEmail);
+        }
+        String name = result.getString("item_name");
+        String description = result.getString("description");
+        String pickup = result.getString("pickup");
+        int stock = result.getInt("stock");
+        double price = result.getDouble("price");
+        item = new Item(seller, name, description, stock, pickup, price, getPictures(itemId));
+        item.setComments(getComments(itemId));
+        item.setItemid(itemId);
         return item;
     }
 
@@ -388,7 +398,7 @@ public class DBDataFacade {
             ResultSet result = db.query("select picture from pictures where articleid = " + articleId);
             try {
                 while (result.next())
-                    pictures.add(ImageManager.createImage(result.getString("comment")));
+                    pictures.add(ImageManager.createImage(result.getString("picture")));
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -425,19 +435,36 @@ public class DBDataFacade {
         return ret;
     }
 
-    public static List<Item> getSearch(String search, Ordering orderBy) {
+    public static List<Item> getSearch(String search, Ordering orderBy, String pickup) {
 
         List<Item> items = new LinkedList<>();
+        String sorting = "";
+
         switch (orderBy) {
             case LOWEST_PRICE:
+                sorting = "order by price asc";
                 break;
             case STARS:
+                sorting = "order by stars desc";
                 break;
             case PICKUP:
-                break;
-            default:
+                sorting = "and pickup = '" + pickup + "'";
                 break;
         }
+
+        if (db.connect()) {
+            ResultSet result = db.query("select * from articles where item_name like '%" + search + "%' " + sorting);
+            try {
+                while(result.next()) {
+                    if(!db.isConnected())
+                        db.connect();
+                    items.add(createItem(null, result));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        db.disconnect();
         return items;
     }
 

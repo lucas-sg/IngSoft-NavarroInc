@@ -14,7 +14,7 @@ public class Seller extends User {
 
 
     public Seller(String name, String password, String surname, String eMail, String country, String province,
-                  String city, String street, Integer number, Integer zipCode, String telephone, String docNumber,
+                  String city, String street, Integer number, String zipCode, String telephone, String docNumber,
                   PhoneType telephoneType, DocumentType docType) {
         super(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
                 telephoneType, docType);
@@ -27,6 +27,10 @@ public class Seller extends User {
 
     public void setItemList(List<Item> itemList) {
         this.itemList = itemList;
+    }
+
+    public void addItem(Item item) {
+        itemList.add(item);
     }
 
     public Integer getStars() {

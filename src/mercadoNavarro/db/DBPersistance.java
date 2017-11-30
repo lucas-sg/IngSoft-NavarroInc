@@ -76,4 +76,17 @@ public class DBPersistance {
         }
         return null;
     }
+
+    public boolean isConnected() {
+        boolean ret = true;
+        if(connection != null)
+            try {
+                ret = !connection.isClosed();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        else
+            return false;
+        return ret;
+    }
 }

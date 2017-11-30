@@ -1,5 +1,6 @@
 package mercadoNavarro.model;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class Item {
@@ -21,7 +22,10 @@ public class Item {
         this.stock = stock;
         this.pickup = pickup;
         this.price = price;
-        this.gallery = gallery;
+        if(gallery != null)
+            this.gallery = gallery;
+        else this.gallery = new LinkedList<>();
+        comments = new LinkedList<>();
     }
 
     public Seller getSeller() {
@@ -94,5 +98,20 @@ public class Item {
 
     public void setComments(List<String> comments) {
         this.comments = comments;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Item item = (Item) o;
+
+        return itemid != null ? itemid.equals(item.itemid) : item.itemid == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return itemid != null ? itemid.hashCode() : 0;
     }
 }
