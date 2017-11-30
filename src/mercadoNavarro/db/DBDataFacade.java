@@ -115,15 +115,15 @@ public class DBDataFacade {
                 boolean isEnabled = result.getBoolean("enabled");
                 ResultSet sellerData = db.query("select * from sellers where sellerid = " + id);
                 if (sellerData.next()) {
-                    String category = result.getString("category");
-                    int stars = result.getInt("stars");
-                    String photo = result.getString("image");
+                    String category = sellerData.getString("category");
+                    int stars = sellerData.getInt("stars");
+                    String photo = sellerData.getString("image");
                     user = new Seller(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
                             PhoneType.valueOf(telphoneType.toUpperCase()), DocumentType.valueOf(docType.toUpperCase()));
                     ResultSet articles = db.query("select articleid from articles where sellerid = " + id);
                     List<Item> items = new LinkedList<>();
                     while (articles.next()) {
-                        items.add(getItem(articles.getInt("articleid")));
+                        items.add(getItem(articles.getInt("articleid"), (Seller)user));
                         ((Seller) user).setItemList(items);
                     }
                     ((Seller) user).setCategory(category);
@@ -245,23 +245,30 @@ public class DBDataFacade {
     }
 
     public static Item getItem(int itemId) {
+        return getItem(itemId, null);
+    }
+
+    private static Item getItem(int itemId, Seller seller) {
 
         Item item = null;
         if (db.connect()) {
             ResultSet result = db.query("select * from articles where articleid = " + itemId);
             try {
                 if (result.next()) {
-                    int seller = result.getInt("sellerid");
-                    String sellerEmail = null;
-                    ResultSet sellerData = db.query("select email from users where userid = " + seller);
-                    if (sellerData.next())
-                        sellerEmail = sellerData.getString("email");
+                    int sellerId = result.getInt("sellerid");
+                    if(seller == null) {
+                        String sellerEmail = null;
+                        ResultSet sellerData = db.query("select email from users where userid = " + sellerId);
+                        if (sellerData.next())
+                            sellerEmail = sellerData.getString("email");
+                        seller = (Seller) getUser(sellerEmail);
+                    }
                     String name = result.getString("item_name");
                     String description = result.getString("description");
                     String pickup = result.getString("pickup");
                     int stock = result.getInt("stock");
                     double price = result.getDouble("price");
-                    item = new Item((Seller) getUser(sellerEmail), name, description, stock, pickup, price, getPictures(itemId));
+                    item = new Item(seller, name, description, stock, pickup, price, getPictures(itemId));
                     item.setComments(getComments(itemId));
                     item.setItemid(itemId);
                 }

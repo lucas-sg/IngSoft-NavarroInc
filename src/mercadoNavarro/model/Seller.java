@@ -3,6 +3,7 @@ package mercadoNavarro.model;
 import mercadoNavarro.enums.DocumentType;
 import mercadoNavarro.enums.PhoneType;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class Seller extends User {
@@ -17,6 +18,7 @@ public class Seller extends User {
                   PhoneType telephoneType, DocumentType docType) {
         super(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
                 telephoneType, docType);
+        itemList = new LinkedList<>();
     }
 
     public List<Item> getItemList() {
