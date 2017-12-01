@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
 
+import mercadoNavarro.model.Admin;
 import mercadoNavarro.model.User;
 
 import javax.swing.JButton;
@@ -41,12 +42,18 @@ public class HomeFrame {
 
 	JFrame frame;
 	User user;
+	Admin admin;
 
 	/**
 	 * Create the application.
 	 */
 	public HomeFrame(User user) {
 		this.user = user;
+		initialize();
+	}
+
+	public HomeFrame(Admin admin) {
+		this.admin = admin;
 		initialize();
 	}
 
