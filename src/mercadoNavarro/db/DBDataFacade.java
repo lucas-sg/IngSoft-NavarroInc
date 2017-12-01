@@ -110,7 +110,7 @@ public class DBDataFacade {
                 String zipCode = result.getString("zip_code");
                 String telephone = result.getString("phone");
                 String docNumber = result.getString("document");
-                String telphoneType = result.getString("phone_type");
+                String telephoneType = result.getString("phone_type");
                 String docType = result.getString("document_type");
                 boolean isEnabled = result.getBoolean("enabled");
                 ResultSet sellerData = db.query("select * from sellers where sellerid = " + id);
@@ -119,7 +119,7 @@ public class DBDataFacade {
                     int stars = sellerData.getInt("stars");
                     String photo = sellerData.getString("image");
                     user = new Seller(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
-                            PhoneType.valueOf(telphoneType.toUpperCase()), DocumentType.valueOf(docType.toUpperCase()));
+                            PhoneType.valueOf(telephoneType.toUpperCase()), DocumentType.valueOf(docType.toUpperCase()));
                     ResultSet articles = db.query("select articleid from articles where sellerid = " + id);
                     List<Item> items = new LinkedList<>();
                     while (articles.next()) {
@@ -131,7 +131,7 @@ public class DBDataFacade {
                     ((Seller) user).setStars(stars);
                 } else
                     user = new Buyer(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
-                            PhoneType.valueOf(telphoneType.toUpperCase()), DocumentType.valueOf(docType.toUpperCase()));
+                            PhoneType.valueOf(telephoneType.toUpperCase()), DocumentType.valueOf(docType.toUpperCase()));
                 user.setEnabled(isEnabled);
             } catch (SQLException e) {
                 e.printStackTrace();
