@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
 
+import mercadoNavarro.model.User;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -38,11 +40,13 @@ import java.awt.GridBagConstraints;
 public class HomeFrame {
 
 	JFrame frame;
+	User user;
 
 	/**
 	 * Create the application.
 	 */
-	public HomeFrame() {
+	public HomeFrame(User user) {
+		this.user = user;
 		initialize();
 	}
 

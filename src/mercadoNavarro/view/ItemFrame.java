@@ -58,7 +58,7 @@ public class ItemFrame {
 	private void initialize(int itemId) {
 		frame = new JFrame();
 		frame.setBounds(200, 200, 800, 600);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		JPanel basePane = new JPanel(new BorderLayout(0,0));
 		frame.setContentPane(basePane);

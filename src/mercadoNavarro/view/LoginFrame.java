@@ -1,24 +1,21 @@
 package mercadoNavarro.view;
 
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.imageio.plugins.jpeg.JPEGHuffmanTable;
+import javax.swing.*;
 
+import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import javax.swing.JTextPane;
 
 import mercadoNavarro.db.DBDataFacade;
-import mercadoNavarro.model.Item;
-
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
+import mercadoNavarro.model.Admin;
+import mercadoNavarro.model.User;
 
 public class LoginFrame {
 
 	JFrame frame;
+	JLabel error;
+	Timer timer;
 
 	/**
 	 * Create the application.
@@ -43,7 +40,7 @@ public class LoginFrame {
 	}
 
 	public class LoginPane extends JPanel {
-		private JTextField textField;
+		private JPasswordField textField;
 		private JTextField textField_1;
 
 		/**
@@ -55,10 +52,19 @@ public class LoginFrame {
 			JButton btnNewButton = new JButton("Login");
 			btnNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					frame.setVisible(false); //you can't see me!
-					frame.dispose(); //Destroy the JFrame object
-					HomeFrame window = new HomeFrame();
-					window.frame.setVisible(true);
+					User u = null;
+					HomeFrame window = null;
+					if((u = DBDataFacade.getUser(textField_1.getText())) != null) {
+						if(u.getPassword() == new String(textField.getPassword())) {
+							frame.setVisible(false); //you can't see me!
+							frame.dispose(); //Destroy the JFrame object
+							window = new HomeFrame(u);
+							window.frame.setVisible(true);
+						}
+						showError(1);
+					} else {
+						showError(2);
+					}
 				}
 			});
 			btnNewButton.setBounds(117, 213, 97, 25);
@@ -76,7 +82,7 @@ public class LoginFrame {
 			btnNewButton_1.setBounds(253, 213, 97, 25);
 			add(btnNewButton_1);
 
-			textField = new JTextField();
+			textField = new JPasswordField();
 			textField.setBounds(117, 170, 233, 22);
 			add(textField);
 			textField.setColumns(10);
@@ -91,14 +97,39 @@ public class LoginFrame {
 			add(lblUsername);
 
 			JLabel lblPassword = new JLabel("Password");
-			lblPassword.setBounds(29, 173, 56, 16);
+			lblPassword.setBounds(29, 173, 70, 16);
 			add(lblPassword);
+
+			error = new JLabel();
+			error.setBounds(100, 190, 250, 22);
+			error.setHorizontalAlignment(SwingConstants.CENTER);
+			error.setForeground(Color.RED);
+			add(error);
+
+			timer = new Timer(5000, new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					error.setText("");
+				}
+			});
 
 			/*JLabel logo = new JLabel("");
 			logo.setIcon(new ImageIcon("C:\\Users\\Rodrigo Navarro\\Desktop\\Coin.png"));
 			logo.setBounds(114, 30, 277, 64);
 			add(logo);*/
 		}
+	}
+
+	public void showError(int id) {
+		switch (id) {
+			case 1:
+				error.setText("User and password combination incorrect");
+				break;
+			case 2:
+				error.setText("User not found");
+				break;
+		}
+		timer.start();
 	}
 }
 

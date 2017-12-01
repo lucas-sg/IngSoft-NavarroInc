@@ -96,37 +96,38 @@ public class DBDataFacade {
         if (db.connect()) {
             ResultSet result = db.query("select * from users where email = '" + email + "'");
             try {
-                result.next();
-                int id = result.getInt("userid");
-                String name = result.getString("first_name");
-                String password = result.getString("password");
-                String surname = result.getString("lastname");
-                String eMail = result.getString("email");
-                String country = result.getString("country");
-                String province = result.getString("province");
-                String city = result.getString("city");
-                String street = result.getString("street");
-                int number = result.getInt("street_number");
-                String zipCode = result.getString("zip_code");
-                String telephone = result.getString("phone");
-                String docNumber = result.getString("document");
-                String telephoneType = result.getString("phone_type");
-                String docType = result.getString("document_type");
-                boolean isEnabled = result.getBoolean("enabled");
-                ResultSet sellerData = db.query("select * from sellers where sellerid = " + id);
-                if (sellerData.next()) {
-                    String category = sellerData.getString("category");
-                    int stars = sellerData.getInt("stars");
-                    String photo = sellerData.getString("image");
-                    user = new Seller(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
-                            PhoneType.valueOf(telephoneType.toUpperCase()), DocumentType.valueOf(docType.toUpperCase()));
-                    ((Seller) user).setCategory(category);
-                    ((Seller) user).setStars(stars);
-                } else
-                    user = new Buyer(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
-                            PhoneType.valueOf(telephoneType.toUpperCase()), DocumentType.valueOf(docType.toUpperCase()));
-                user.setEnabled(isEnabled);
-                user.setId(id);
+                if(result.next()) {
+                    int id = result.getInt("userid");
+                    String name = result.getString("first_name");
+                    String password = result.getString("password");
+                    String surname = result.getString("lastname");
+                    String eMail = result.getString("email");
+                    String country = result.getString("country");
+                    String province = result.getString("province");
+                    String city = result.getString("city");
+                    String street = result.getString("street");
+                    int number = result.getInt("street_number");
+                    String zipCode = result.getString("zip_code");
+                    String telephone = result.getString("phone");
+                    String docNumber = result.getString("document");
+                    String telephoneType = result.getString("phone_type");
+                    String docType = result.getString("document_type");
+                    boolean isEnabled = result.getBoolean("enabled");
+                    ResultSet sellerData = db.query("select * from sellers where sellerid = " + id);
+                    if (sellerData.next()) {
+                        String category = sellerData.getString("category");
+                        int stars = sellerData.getInt("stars");
+                        String photo = sellerData.getString("image");
+                        user = new Seller(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
+                                PhoneType.valueOf(telephoneType.toUpperCase()), DocumentType.valueOf(docType.toUpperCase()));
+                        ((Seller) user).setCategory(category);
+                        ((Seller) user).setStars(stars);
+                    } else
+                        user = new Buyer(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
+                                PhoneType.valueOf(telephoneType.toUpperCase()), DocumentType.valueOf(docType.toUpperCase()));
+                    user.setEnabled(isEnabled);
+                    user.setId(id);
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
