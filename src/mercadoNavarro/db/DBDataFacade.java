@@ -120,25 +120,40 @@ public class DBDataFacade {
                     String photo = sellerData.getString("image");
                     user = new Seller(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
                             PhoneType.valueOf(telephoneType.toUpperCase()), DocumentType.valueOf(docType.toUpperCase()));
-                    ResultSet articles = db.query("select articleid from articles where sellerid = " + id);
-                    List<Item> items = new LinkedList<>();
-                    while (articles.next()) {
-                        items.add(getItem(articles.getInt("articleid"), (Seller)user));
-                        ((Seller) user).setItemList(items);
-                    }
                     ((Seller) user).setCategory(category);
-                    ((Seller) user).setPhoto(ImageManager.createImage(photo));
                     ((Seller) user).setStars(stars);
                 } else
                     user = new Buyer(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
                             PhoneType.valueOf(telephoneType.toUpperCase()), DocumentType.valueOf(docType.toUpperCase()));
                 user.setEnabled(isEnabled);
+                user.setId(id);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             db.disconnect();
         }
         return user;
+    }
+
+    public static Seller getFullSeller(String email) {
+        Seller seller = (Seller) getUser(email);
+
+        ResultSet sellerData = db.query("select * from sellers where sellerid = " + seller.getId());
+        try {
+            if (sellerData.next()) {
+                String photo = sellerData.getString("image");
+                ResultSet articles = db.query("select articleid from articles where sellerid = " + seller.getId());
+                List<Item> items = new LinkedList<>();
+                while (articles.next()) {
+                    items.add(getItem(articles.getInt("articleid"), seller));
+                    seller.setItemList(items);
+                }
+                seller.setPhoto(ImageManager.createImage(photo));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return seller;
     }
 
     public static boolean modifyUser(User user) {
@@ -152,7 +167,7 @@ public class DBDataFacade {
                 ret = db.update("users set first_name = '" + user.getName() + "', lastname = '" + user.getSurname() + "', document_type = '" + user.getDocType() +
                         "', country = '" + user.getCountry() + "', province = '" + user.getProvince() + "', city = '" + user.getCity() + "', street = '" +
                         user.getStreet() + "', street_number = " + user.getNumber() + ", zip_code = '" + user.getZipCode() + "', phone = '" + user.getTelephone() +
-                        "', phone_type = '" + user.getTelephoneType() + "', enabled = " + user.isEnabled() +" where userid =" + id);
+                        "', phone_type = '" + user.getTelephoneType() + "', enabled = " + user.isEnabled() + " where userid =" + id);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -177,12 +192,21 @@ public class DBDataFacade {
                 ResultSet items = db.query("select * from articles where sellerid = " + id);
                 ret &= db.update("sellers set category = '" + seller.getCategory() + "', stars = " + seller.getStars() + ", image = '" +
                         ImageManager.encodeImage(seller.getPhoto()) + "' where sellerid = " + id);
-                while(items.next()) {
+                while (items.next()) {
                     int itemId = items.getInt("articleid");
                     Item i = getItem(itemId);
-                    LinkedList<Item> list = (LinkedList<Item>) seller.getItemList();
-                    list.contains(i);
-                    if(seller.getItemList().contains(i))
+                    if (i.getItemid() == null) {
+                        boolean removed = false;
+                        for (Item item : seller.getItemList()) {
+                            if (i.getName() == item.getName()) {
+                                toAdd.remove(i);
+                                removed = true;
+                                break;
+                            }
+                        }
+                        if (!removed)
+                            ret &= db.delete("from articles where item_name =" + i.getName());
+                    } else if (seller.getItemList().contains(i))
                         toAdd.remove(i);
                     else
                         ret &= db.delete("from articles where articleid =" + itemId);
@@ -191,7 +215,7 @@ public class DBDataFacade {
                 e.printStackTrace();
             }
             db.disconnect();
-            for (Item item: toAdd) {
+            for (Item item : toAdd) {
                 ret &= addItem(item);
             }
         }
@@ -267,25 +291,37 @@ public class DBDataFacade {
         return item;
     }
 
-    private static Item createItem(Seller seller, ResultSet result) throws SQLException{
+    private static Item createItem(Seller seller, ResultSet result) throws SQLException {
 
-        Item item = null;
-        int itemId = result.getInt("articleid");
+        Item item = createPartialItem(result);
         int sellerId = result.getInt("sellerid");
-        if(seller == null) {
+        if (seller == null) {
             String sellerEmail = null;
             ResultSet sellerData = db.query("select email from users where userid = " + sellerId);
             if (sellerData.next())
                 sellerEmail = sellerData.getString("email");
             seller = (Seller) getUser(sellerEmail);
         }
+        item.setSeller(seller);
+        item.setGallery(getPictures(item.getItemid()));
+        item.setComments(getComments(item.getItemid()));
+        return item;
+    }
+
+    private static Item createPartialItem(ResultSet result) throws SQLException {
+
+        Item item = null;
+        int itemId = result.getInt("articleid");
         String name = result.getString("item_name");
         String description = result.getString("description");
         String pickup = result.getString("pickup");
         int stock = result.getInt("stock");
         double price = result.getDouble("price");
-        item = new Item(seller, name, description, stock, pickup, price, getPictures(itemId));
-        item.setComments(getComments(itemId));
+        ResultSet picture = db.query("select picture from pictures where articleid = " + itemId);
+        LinkedList<String> pictures = new LinkedList<>();
+        if (picture.next())
+            pictures.add(ImageManager.createImage(picture.getString("picture")));
+        item = new Item(null, name, description, stock, pickup, price, pictures);
         item.setItemid(itemId);
         return item;
     }
@@ -368,8 +404,7 @@ public class DBDataFacade {
                         int id = result.getInt("commentid");
                         if (comments.contains(comment)) {
                             toAdd.remove(comment);
-                        }
-                        else {
+                        } else {
                             ret &= db.delete("from comments where commentid =" + id);
                         }
                     }
@@ -426,8 +461,7 @@ public class DBDataFacade {
                         int id = result.getInt("pictureid");
                         if (pictures.contains(image)) {
                             toAdd.remove(image);
-                        }
-                        else {
+                        } else {
                             ret &= db.delete("from pictures where pictureid =" + id);
                         }
                     }
@@ -441,7 +475,7 @@ public class DBDataFacade {
         return ret;
     }
 
-    public static List<Item> getSearch(String search, Ordering orderBy, String pickup) {
+    public static List<Item> getSearch(String search, Ordering orderBy) {
 
         List<Item> items = new LinkedList<>();
         String sorting = "";
@@ -454,18 +488,16 @@ public class DBDataFacade {
                 sorting = "order by stars desc";
                 break;
             case PICKUP:
-                sorting = "and pickup = '" + pickup + "'";
+                sorting = "order by pickup";
                 break;
         }
 
         if (db.connect()) {
-            ResultSet result = db.query("select articleid, sellerid, item_name, description, stock, pickup, price, stars from articles natural join sellers where item_name " +
-                    "like '%" + search + "%' " + sorting);
+            ResultSet result = db.query("select articleid, sellerid, item_name, description, stock, pickup, price, stars from articles natural join sellers where lower(item_name) " +
+                    "like lower('%" + search + "%') " + sorting);
             try {
-                while(result.next()) {
-                    if(!db.isConnected())
-                        db.connect();
-                    items.add(createItem(null, result));
+                while (result.next()) {
+                    items.add(createPartialItem(result));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

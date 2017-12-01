@@ -28,7 +28,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.MatteBorder;
 
-import net.miginfocom.swing.MigLayout;
+
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
@@ -95,10 +95,10 @@ public class MainFrame {
 			add(new JScrollPane(mainList));
 		}
 
-		public ArticlesPane(String search, Ordering orderBy, String pickup) {
+		public ArticlesPane(String search, Ordering orderBy) {
 			this();
 
-			List<Item> articles = DBDataFacade.getSearch(search, orderBy, pickup);
+			List<Item> articles = DBDataFacade.getSearch(search, orderBy);
 			for (Item article : articles) {
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -176,23 +176,23 @@ public class MainFrame {
 					  JPanel articlesPane;
 					  switch((String)comboBox.getSelectedItem()) {
 					  	case "Default": {
-					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.DEFAULT, "");
+					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.DEFAULT);
 					  		break;
 					  	}
 					  	case "Lowest Price": {
-					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.LOWEST_PRICE, "");
+					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.LOWEST_PRICE);
 					  		break;
 					  	}
 					  	case "Stars": {
-					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.STARS, "");
+					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.STARS);
 					  		break;
 					  	}
 					  	case "Pickup": {
-					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.PICKUP, "");
+					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.PICKUP);
 					  		break;
 					  	}
 					  	default: {
-					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.DEFAULT, "");
+					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.DEFAULT);
 					  		break;
 					  	}
 					  }

@@ -19,6 +19,7 @@ public abstract class User {
     private PhoneType telephoneType;
     private DocumentType docType;
     private boolean isEnabled;
+    private Integer id;
 
     public User(String name, String password, String surname, String eMail, String country, String province,
                 String city, String street, Integer number, String zipCode, String telephone, String docNumber,
@@ -152,6 +153,14 @@ public abstract class User {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override
