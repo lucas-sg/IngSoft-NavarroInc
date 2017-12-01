@@ -55,13 +55,14 @@ public class LoginFrame {
 					User u = null;
 					HomeFrame window = null;
 					if((u = DBDataFacade.getUser(textField_1.getText())) != null) {
-						if(u.getPassword() == new String(textField.getPassword())) {
+						String password = new String(textField.getPassword());
+						if(u.getPassword().equals(password)) {
 							frame.setVisible(false); //you can't see me!
 							frame.dispose(); //Destroy the JFrame object
 							window = new HomeFrame(u);
 							window.frame.setVisible(true);
-						}
-						showError(1);
+						} else
+							showError(1);
 					} else {
 						showError(2);
 					}
