@@ -46,6 +46,7 @@ public class MainFrame {
 			public void run() {
 				try {
 					MainFrame window = new MainFrame();
+					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -67,15 +68,15 @@ public class MainFrame {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+		
+		JPanel homePane = new JPanel(new BorderLayout(0,0));
+		frame.setContentPane(homePane);
 		
 		JPanel searchPane = new SearchPane();
-		frame.getContentPane().add(searchPane, BorderLayout.LINE_START);
+		homePane.add(searchPane, BorderLayout.LINE_START);
 		
 		JPanel articlesPane = new ArticlesPane();
-		frame.getContentPane().add(articlesPane, BorderLayout.CENTER);
-		
-		frame.setVisible(true);
+		homePane.add(articlesPane, BorderLayout.CENTER);
 	}
 	
 	public class ArticlesPane extends JPanel {
@@ -99,6 +100,7 @@ public class MainFrame {
 			this();
 
 			List<Item> articles = DBDataFacade.getSearch(search, orderBy);
+			int i = 0;
 			for (Item article : articles) {
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -112,7 +114,7 @@ public class MainFrame {
 				gbc.gridwidth = GridBagConstraints.REMAINDER;
 				gbc.weightx = 1;
 				gbc.fill = GridBagConstraints.HORIZONTAL;
-				mainList.add(panel, gbc, 0);
+				mainList.add(panel, gbc, i++);
 			}
 		}
 	}
