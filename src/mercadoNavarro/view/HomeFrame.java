@@ -98,7 +98,7 @@ public class HomeFrame {
 					panel.add(salesBtn);
 				}
 				else if (user instanceof Seller) {
-					JButton cartBtn = new JButton("View Cart List");
+					JButton cartBtn = new JButton("View For Sale List");
 					panel.add(cartBtn);
 					JButton salesBtn = new JButton("View Sold List");
 					panel.add(salesBtn);
