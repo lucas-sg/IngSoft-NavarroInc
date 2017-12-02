@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import mercadoNavarro.model.Admin;
+import mercadoNavarro.model.Buyer;
 import mercadoNavarro.model.User;
 
 import javax.swing.JButton;
@@ -24,10 +26,14 @@ import javax.swing.JTextField;
 import mercadoNavarro.db.DBDataFacade;
 import mercadoNavarro.enums.Ordering;
 import mercadoNavarro.model.Item;
+import mercadoNavarro.model.Seller;
+
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.MatteBorder;
@@ -68,11 +74,48 @@ public class HomeFrame {
 		JPanel basePane = new JPanel(new BorderLayout(0,0));
 		frame.setContentPane(basePane);
 		
-		JPanel searchPane = new SearchPane();
-		basePane.add(searchPane, BorderLayout.LINE_START);
+		JPanel optionsPane = new OptionsPane();
+		basePane.add(optionsPane, BorderLayout.PAGE_START);
 		
 		JPanel articlesPane = new ArticlesPane();
 		basePane.add(articlesPane, BorderLayout.CENTER);
+		
+		JPanel searchPane = new SearchPane();
+		basePane.add(searchPane, BorderLayout.LINE_START);
+	}
+	
+	public class OptionsPane extends JPanel {
+		
+		public OptionsPane() {
+			JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+			if (user != null && admin == null) {
+				JButton modifyBtn = new JButton("Modify User Info");
+				panel.add(modifyBtn);
+				if (user instanceof Buyer) {
+					JButton cartBtn = new JButton("View Cart List");
+					panel.add(cartBtn);
+					JButton salesBtn = new JButton("View Bought List");
+					panel.add(salesBtn);
+				}
+				else if (user instanceof Seller) {
+					JButton cartBtn = new JButton("View Cart List");
+					panel.add(cartBtn);
+					JButton salesBtn = new JButton("View Sold List");
+					panel.add(salesBtn);
+				}
+			}
+			else if (user == null && admin != null) {
+				JButton adminBtn = new JButton("Admin Panel");
+				panel.add(adminBtn);
+			}
+			
+			add(panel);
+		}
+		
+		@Override
+		public Dimension getPreferredSize() {
+			return new Dimension(250, 100);
+		}
 	}
 	
 	public class ArticlesPane extends JPanel {
@@ -131,6 +174,8 @@ public class HomeFrame {
 		 * Create the panel.
 		 */
 		public SearchPane() {
+			
+			setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
 			
 			JLabel lblSearchByName = new JLabel("Search by name:");
 			
