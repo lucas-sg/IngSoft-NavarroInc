@@ -58,7 +58,9 @@ public class LoginFrame {
                     String user = textField_1.getText();
                     String password = new String(textField.getPassword());
                     if ((u = DBDataFacade.getUser(user)) != null) {
-                        if (u.getPassword().equals(password)) {
+                        if(!u.isEnabled())
+                            showError(3);
+                        else if (u.getPassword().equals(password)) {
                             frame.setVisible(false);
                             frame.dispose();
                             window = new HomeFrame(u);
@@ -138,6 +140,8 @@ public class LoginFrame {
             case 2:
                 error.setText("User not found");
                 break;
+            case 3:
+                error.setText("User is not enabled");
         }
         timer.start();
     }

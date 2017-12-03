@@ -42,7 +42,7 @@ public class AdminFrame {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(200, 200, 800, 600);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		JPanel basePane = new JPanel(new BorderLayout(0,0));
 		frame.setContentPane(basePane);
@@ -56,15 +56,17 @@ public class AdminFrame {
 		/**
 		 * Create the panel.
 		 */
-		/*public UsersPane() {
+		public UsersPane() {
 			JPanel panel = new JPanel();
 			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 			List<User> users = DBDataFacade.getUsers();
 			for (User user : users) {
-				panel.add(new JCheckBox(user.getName()));
+				JCheckBox checkBox = new JCheckBox(user.getName());
+				checkBox.setSelected(user.isEnabled());
+				panel.add(checkBox);
 			}
 			panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
 			add(new JScrollPane(panel));
-		}*/
+		}
 	}
 }
