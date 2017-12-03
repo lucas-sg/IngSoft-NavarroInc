@@ -27,6 +27,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
@@ -60,22 +61,48 @@ public class ItemFrame {
 		frame.setBounds(200, 200, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
-		JPanel basePane = new JPanel(new BorderLayout(0,0));
-		frame.setContentPane(basePane);
-		
 		item = DBDataFacade.getItem(itemId);
 		
-		JPanel galleryPane = new GalleryPane();
-		basePane.add(galleryPane, BorderLayout.PAGE_START);
+		JPanel basePane = new JPanel(new BorderLayout(0, 0));
+		frame.setContentPane(basePane);
+		
+		JPanel containerPane = new JPanel();
+		containerPane.setLayout(new BoxLayout(containerPane, BoxLayout.Y_AXIS));
 		
 		JPanel infoPane = new InfoPane();
-		basePane.add(infoPane, BorderLayout.CENTER);
+		containerPane.add(infoPane);
+		
+		JPanel galleryPane = new GalleryPane();
+		containerPane.add(galleryPane);
 		
 		JPanel commentsPane = new CommentsPane();
-		basePane.add(commentsPane, BorderLayout.PAGE_END);
+		containerPane.add(commentsPane);
 		
-		frame.validate();
-		frame.repaint();
+		JScrollPane scroll = new JScrollPane(containerPane);
+		basePane.add(scroll);
+
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			   public void run() { 
+			       scroll.getVerticalScrollBar().setValue(0);
+			   }
+		});
+	}
+	
+	public class InfoPane extends JPanel {
+		
+		public InfoPane() {
+			setLayout(new BorderLayout(0, 0));
+
+			JPanel panel = new JPanel();
+			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+			panel.add(new JLabel("Name: " + item.getName()));
+			panel.add(new JLabel("Description: " + item.getDescription()));
+			panel.add(new JLabel("Stock: " + item.getStock()));
+			panel.add(new JLabel("Pickup: " + item.getPickup()));
+			panel.add(new JLabel("Price: " + item.getPrice()));
+			
+			add(panel);
+		}
 	}
 	
 	public class GalleryPane extends JPanel {
@@ -86,7 +113,7 @@ public class ItemFrame {
 			for (String img : item.getGallery()) {
 				ImageIcon imgIcon = new ImageIcon(img);
 				Image image = imgIcon.getImage(); // transform it 
-				Image newimg = image.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+				Image newimg = image.getScaledInstance(128, 128,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 				imgIcon = new ImageIcon(newimg);  // transform it back
 				JLabel pic = new JLabel();
 				pic.setIcon(imgIcon);
@@ -99,34 +126,6 @@ public class ItemFrame {
 			scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 			
 			add(scroll);
-		}
-		
-		@Override
-		public Dimension getPreferredSize() {
-			return new Dimension(250, 100);
-		}
-	}
-	
-	public class InfoPane extends JPanel {
-		
-		public InfoPane() {
-			setLayout(new BorderLayout());
-
-			JPanel panel = new JPanel();
-			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-			panel.add(new JLabel("Name: " + item.getName()));
-			panel.add(new JLabel("Description: " + item.getDescription()));
-			panel.add(new JLabel("Stock: " + item.getStock()));
-			panel.add(new JLabel("Pickup: " + item.getPickup()));
-			panel.add(new JLabel("Price: " + item.getPrice()));
-			panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
-			
-			add(panel);
-		}
-		
-		@Override
-		public Dimension getPreferredSize() {
-			return new Dimension(250, 200);
 		}
 	}
 	
@@ -143,12 +142,11 @@ public class ItemFrame {
 			gbc.weightx = 1;
 			gbc.weighty = 1;
 			mainList.add(new JPanel(), gbc);
-			add(new JScrollPane(mainList));
+			add(mainList);
 			
 			JPanel titlepanel = new JPanel();
 			titlepanel.setLayout(new BoxLayout(titlepanel, BoxLayout.Y_AXIS));
 			titlepanel.add(new JLabel("Comments: "));
-			titlepanel.setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
 			gbc = new GridBagConstraints();
 			gbc.gridwidth = GridBagConstraints.REMAINDER;
 			gbc.weightx = 1;
@@ -160,7 +158,10 @@ public class ItemFrame {
 			for (String comment : item.getComments()) {
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-				panel.add(new JLabel("#" + i + " - " + comment));
+				JTextArea commentText = new JTextArea("#" + i + " - " + comment);
+				commentText.setEditable(false);
+				commentText.setLineWrap(true);
+				panel.add(commentText);
 				panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
 				gbc = new GridBagConstraints();
 				gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -169,11 +170,6 @@ public class ItemFrame {
 				gbc.insets = new Insets(5, 5, 5, 5);
 				mainList.add(panel, gbc, i++);
 			}
-		}
-		
-		@Override
-		public Dimension getPreferredSize() {
-			return new Dimension(250, 200);
 		}
 	}
 }

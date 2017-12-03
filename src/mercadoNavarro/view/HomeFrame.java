@@ -34,6 +34,7 @@ import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.MatteBorder;
@@ -87,34 +88,51 @@ public class HomeFrame {
 	public class OptionsPane extends JPanel {
 		
 		public OptionsPane() {
-			JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+			JPanel panel = new JPanel();
+			panel.setLayout(new BorderLayout(20, 0));
+			
+			JLabel helloMsg = new JLabel("");
+			
+			JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 			if (user != null && admin == null) {
 				JButton modifyBtn = new JButton("Modify User Info");
-				panel.add(modifyBtn);
+				buttons.add(modifyBtn);
 				if (user instanceof Buyer) {
+					helloMsg.setText("Hello, " + user.getName() + " " + user.getSurname() + " (Buyer)");
 					JButton cartBtn = new JButton("View Cart List");
-					panel.add(cartBtn);
+					buttons.add(cartBtn);
 					JButton salesBtn = new JButton("View Bought List");
-					panel.add(salesBtn);
+					buttons.add(salesBtn);
 				}
 				else if (user instanceof Seller) {
+					helloMsg.setText("Hello, " + user.getName() + " " + user.getSurname() + " (Seller)");
 					JButton cartBtn = new JButton("View For Sale List");
-					panel.add(cartBtn);
+					buttons.add(cartBtn);
 					JButton salesBtn = new JButton("View Sold List");
-					panel.add(salesBtn);
+					buttons.add(salesBtn);
 				}
 			}
 			else if (user == null && admin != null) {
+				helloMsg.setText("Hello, Admin");
 				JButton adminBtn = new JButton("Admin Panel");
-				panel.add(adminBtn);
+				buttons.add(adminBtn);
+				
+				adminBtn.addActionListener(new ActionListener() {
+	                public void actionPerformed(ActionEvent arg0) {
+	                    AdminFrame window = new AdminFrame();
+	                    window.frame.setVisible(true);
+	                }
+	            });
 			}
 			
+			panel.add(helloMsg, BorderLayout.LINE_START);
+			panel.add(buttons, BorderLayout.LINE_END);
 			add(panel);
 		}
 		
 		@Override
 		public Dimension getPreferredSize() {
-			return new Dimension(250, 100);
+			return new Dimension(800, 60);
 		}
 	}
 	
@@ -143,11 +161,33 @@ public class HomeFrame {
 			for (Item article : articles) {
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-				panel.add(new JLabel("Name: " + article.getName()));
-				panel.add(new JLabel("Price: " + article.getPrice()));
-				panel.add(new JLabel("Stock: " + article.getStock()));
+				JPanel data = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+				JPanel img = new JPanel(new BorderLayout());
+				ImageIcon imgIcon = new ImageIcon(article.getGallery().get(0));
+				Image image = imgIcon.getImage(); // transform it 
+				Image newimg = image.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+				imgIcon = new ImageIcon(newimg);  // transform it back
+				JLabel pic = new JLabel();
+				pic.setIcon(imgIcon);
+				img.add(pic);
+				JPanel info = new JPanel();
+				info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
+				info.add(new JLabel("Name: " + article.getName()));
+				info.add(new JLabel("Price: " + article.getPrice()));
+				info.add(new JLabel("Stock: " + article.getStock()));
+				JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 				JButton btn = new JButton("View Item Page");
-				panel.add(btn);
+				buttons.add(btn);
+				JButton btn2 = new JButton("Add to Cart");
+				if (user != null && admin == null && user instanceof Buyer)
+					btn2.setEnabled(true);
+				else
+					btn2.setEnabled(false);
+				buttons.add(btn2);
+				data.add(img);
+				data.add(info);
+				panel.add(data);
+				panel.add(buttons);
 				panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
 				GridBagConstraints gbc = new GridBagConstraints();
 				gbc.gridwidth = GridBagConstraints.REMAINDER;
@@ -185,7 +225,7 @@ public class HomeFrame {
 			JLabel lblOrderBy = new JLabel("Order by:");
 			
 			JComboBox comboBox = new JComboBox();
-			comboBox.setModel(new DefaultComboBoxModel(new String[] {"Default", "Lowest Price", "Stars", "Pickup"}));
+			comboBox.setModel(new DefaultComboBoxModel(new String[] {"", "Lowest Price", "Stars", "Pickup"}));
 			
 			JButton btnSearch = new JButton("Search");
 			GroupLayout groupLayout = new GroupLayout(this);
@@ -226,10 +266,6 @@ public class HomeFrame {
 				  public void actionPerformed(ActionEvent e) {
 					  JPanel articlesPane;
 					  switch((String)comboBox.getSelectedItem()) {
-					  	case "Default": {
-					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.DEFAULT);
-					  		break;
-					  	}
 					  	case "Lowest Price": {
 					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.LOWEST_PRICE);
 					  		break;
