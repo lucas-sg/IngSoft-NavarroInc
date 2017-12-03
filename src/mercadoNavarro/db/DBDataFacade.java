@@ -358,7 +358,7 @@ public class DBDataFacade {
 
     private static boolean addComments(List<String> comments, int itemId) {
 
-        boolean ret = false;
+        boolean ret = true;
         if (comments != null) {
             if (db.connect()) {
                 for (String comment : comments) {
@@ -366,6 +366,7 @@ public class DBDataFacade {
                 }
                 db.disconnect();
             }
+            else ret = false;
         } else ret = true;
         return ret;
     }
@@ -394,7 +395,7 @@ public class DBDataFacade {
 
     private static boolean modifyComments(LinkedList<String> comments, int articleId) {
 
-        boolean ret = false;
+        boolean ret = true;
         if (comments != null) {
             LinkedList<String> toAdd = (LinkedList<String>) comments.clone();
             if (db.connect()) {
@@ -413,7 +414,7 @@ public class DBDataFacade {
                     e.printStackTrace();
                 }
                 db.disconnect();
-            }
+            } else ret = false;
             ret &= addComments(toAdd, articleId);
         } else ret = true;
         return ret;
@@ -421,14 +422,14 @@ public class DBDataFacade {
 
     private static boolean addPictures(List<String> photos, int itemId) {
 
-        boolean ret = false;
+        boolean ret = true;
         if (photos != null) {
             if (db.connect()) {
                 for (String photo : photos) {
                     ret &= db.insert("into pictures(picture, articleid) values ('" + ImageManager.encodeImage(photo) + "'," + itemId + ")");
                 }
                 db.disconnect();
-            }
+            } else ret = false;
         } else ret = true;
         return ret;
     }
@@ -451,7 +452,7 @@ public class DBDataFacade {
 
     private static boolean modifyPictures(LinkedList<String> pictures, int articleId) {
 
-        boolean ret = false;
+        boolean ret = true;
         if (pictures != null) {
             LinkedList<String> toAdd = (LinkedList<String>) pictures.clone();
             if (db.connect()) {
@@ -470,7 +471,7 @@ public class DBDataFacade {
                     e.printStackTrace();
                 }
                 db.disconnect();
-            }
+            } else ret = false;
             ret &= addPictures(toAdd, articleId);
         } else ret = true;
         return ret;

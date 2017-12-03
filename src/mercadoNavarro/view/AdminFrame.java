@@ -61,7 +61,7 @@ public class AdminFrame {
 			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 			List<User> users = DBDataFacade.getUsers();
 			for (User user : users) {
-				JCheckBox checkBox = new JCheckBox(user.getName());
+				JCheckBox checkBox = new JCheckBox(user.getName() + " " + user.getSurname() + " (" + user.geteMail() + ")");
 				checkBox.setSelected(user.isEnabled());
 				panel.add(checkBox);
 			}
