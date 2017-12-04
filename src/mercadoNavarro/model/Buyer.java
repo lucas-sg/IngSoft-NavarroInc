@@ -47,8 +47,8 @@ public class Buyer extends User {
     	item.setComments(comments);
     }
     
-    public int getTotalPrice() {
-    	int total = 0;
+    public double getCartTotalPrice() {
+    	double total = 0;
     	
     	for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
     		total += entry.getKey().getPrice() * entry.getValue();
@@ -59,5 +59,9 @@ public class Buyer extends User {
     
     public Set<Map.Entry<Item, Integer>> getCart() {
     	return cart.entrySet();
+    }
+    
+    public boolean cartContainsItem(Item item) {
+    	return cart.containsKey(item);
     }
 }

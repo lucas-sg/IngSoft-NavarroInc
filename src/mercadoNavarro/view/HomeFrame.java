@@ -186,8 +186,13 @@ public class HomeFrame {
 				JButton btn = new JButton("View Item Page");
 				buttons.add(btn);
 				JButton btn2 = new JButton("Add to Cart");
-				if (user != null && admin == null && user instanceof Buyer)
+				if (user != null && admin == null && user instanceof Buyer) {
 					btn2.setEnabled(true);
+					if (((Buyer)user).cartContainsItem(article)) {
+						btn2.setText("Already added to Cart");
+						btn2.setEnabled(false);
+					}
+				}
 				else
 					btn2.setEnabled(false);
 				buttons.add(btn2);
