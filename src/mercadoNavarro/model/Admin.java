@@ -26,4 +26,8 @@ public class Admin {
     public void setPassword(String password) {
         this.password = password;
     }
+    
+    public void enableUser(User user, boolean enable) {
+    	user.setEnabled(enable);
+    }
 }

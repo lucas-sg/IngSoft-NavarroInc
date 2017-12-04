@@ -103,6 +103,13 @@ public class HomeFrame {
 					buttons.add(cartBtn);
 					JButton salesBtn = new JButton("View Bought List");
 					buttons.add(salesBtn);
+					
+					cartBtn.addActionListener(new ActionListener() {
+		                public void actionPerformed(ActionEvent arg0) {
+		                    CartFrame window = new CartFrame((Buyer)user);
+		                    window.frame.setVisible(true);
+		                }
+		            });
 				}
 				else if (user instanceof Seller) {
 					helloMsg.setText("Hello, " + user.getName() + " " + user.getSurname() + " (Seller)");
@@ -200,6 +207,14 @@ public class HomeFrame {
 					  public void actionPerformed(ActionEvent e) {
 						  ItemFrame itemWindow = new ItemFrame(article.getItemid());
 						  itemWindow.frame.setVisible(true);
+					  }
+				});
+				
+				btn2.addActionListener(new ActionListener() {
+					  public void actionPerformed(ActionEvent e) {
+						  ((Buyer)user).addItemToCart(article, 1);
+						  btn2.setText("Already added to Cart");
+						  btn2.setEnabled(false);
 					  }
 				});
 			}

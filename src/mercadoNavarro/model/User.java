@@ -1,5 +1,6 @@
 package mercadoNavarro.model;
 
+import mercadoNavarro.db.DBDataFacade;
 import mercadoNavarro.enums.DocumentType;
 import mercadoNavarro.enums.PhoneType;
 
@@ -153,6 +154,7 @@ public abstract class User {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+        DBDataFacade.modifyUser(this);
     }
 
     public Integer getId() {

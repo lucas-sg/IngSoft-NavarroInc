@@ -2,9 +2,12 @@ package mercadoNavarro.model;
 
 import mercadoNavarro.enums.DocumentType;
 import mercadoNavarro.enums.PhoneType;
+
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Buyer extends User {
 
@@ -15,14 +18,15 @@ public class Buyer extends User {
                  PhoneType telephoneType, DocumentType docType) {
         super(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
                 telephoneType, docType);
+        cart = new HashMap<>();
     }
 
-    public void addItemToCart(Item item) {
-    	if (!cart.containsKey(item))
-    		cart.put(item, 1);
-    	else
-    		cart.put(item, cart.get(item)+1);
-    	item.setStock(item.getStock()-1);
+    public void addItemToCart(Item item, int count) {
+    	cart.put(item, count);
+    }
+    
+    public void removeItemFromCart(Item item) {
+    	cart.remove(item);
     }
     
     public int confirmBuy() {
@@ -41,5 +45,19 @@ public class Buyer extends User {
     	List<String> comments = item.getComments();
     	comments.add(this.getName() + " " + this.getSurname() + " - " + comment);
     	item.setComments(comments);
+    }
+    
+    public int getTotalPrice() {
+    	int total = 0;
+    	
+    	for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
+    		total += entry.getKey().getPrice() * entry.getValue();
+    	}
+    	
+    	return total;
+    }
+    
+    public Set<Map.Entry<Item, Integer>> getCart() {
+    	return cart.entrySet();
     }
 }

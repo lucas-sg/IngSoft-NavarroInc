@@ -3,6 +3,8 @@ package mercadoNavarro.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import mercadoNavarro.db.DBDataFacade;
+
 public class Item {
     private Seller seller;
     private String name;
@@ -58,6 +60,7 @@ public class Item {
 
     public void setStock(Integer stock) {
         this.stock = stock;
+        DBDataFacade.modifyItem(this);
     }
 
     public String getPickup() {
