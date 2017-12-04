@@ -103,6 +103,14 @@ public class Item {
         this.comments = comments;
     }
 
+    public boolean addComment(String comment) {
+        if(DBDataFacade.addComment(comment, itemid)) {
+            comments.add(comment);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

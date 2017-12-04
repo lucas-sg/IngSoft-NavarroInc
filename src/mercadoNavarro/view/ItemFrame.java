@@ -158,7 +158,7 @@ public class ItemFrame {
 				public void actionPerformed(ActionEvent e) {
 					String comment = commentText.getText();
 					if(comment != "") {
-						if(DBDataFacade.addComment(comment, item.getItemid())) {
+						if(item.addComment(comment)) {
 							addComment(comment);
 							commentText.setText("");
 						}
@@ -189,6 +189,8 @@ public class ItemFrame {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.insets = new Insets(5, 5, 5, 5);
 			mainList.add(panel, gbc, listIndex++);
+			frame.revalidate();
+			frame.repaint();
 		}
 	}
 }
