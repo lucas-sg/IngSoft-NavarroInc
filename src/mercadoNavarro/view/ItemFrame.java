@@ -18,21 +18,9 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.ImageIcon;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.border.MatteBorder;
 
 import mercadoNavarro.db.DBDataFacade;
@@ -132,12 +120,14 @@ public class ItemFrame {
 	public class CommentsPane extends JPanel {
 
 		private JPanel mainList;
+		GridBagConstraints gbc;
+		int listIndex = 1;
 		
 		public CommentsPane() {
 			setLayout(new BorderLayout());
 
 			mainList = new JPanel(new GridBagLayout());
-			GridBagConstraints gbc = new GridBagConstraints();
+			gbc = new GridBagConstraints();
 			gbc.gridwidth = GridBagConstraints.REMAINDER;
 			gbc.weightx = 1;
 			gbc.weighty = 1;
@@ -153,23 +143,52 @@ public class ItemFrame {
 			gbc.fill = GridBagConstraints.HORIZONTAL;
 			gbc.insets = new Insets(5, 5, 5, 5);
 			mainList.add(titlepanel, gbc, 0);
-			
-			int i = 1;
+
+			JPanel writeComment = new JPanel();
+			writeComment.setLayout(new BoxLayout(writeComment, BoxLayout.X_AXIS));
+			JTextArea commentText = new JTextArea();
+			commentText.setRows(3);
+			JScrollPane scrollPane = new JScrollPane(commentText);
+			scrollPane.setPreferredSize(scrollPane.getPreferredSize());
+			commentText.setLineWrap(true);
+			commentText.setWrapStyleWord(true);
+			JButton send = new JButton("Comment");
+			send.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String comment = commentText.getText();
+					if(comment != "") {
+						if(DBDataFacade.addComment(comment, item.getItemid())) {
+							addComment(comment);
+							commentText.setText("");
+						}
+					}
+				}
+			});
+			writeComment.add(scrollPane);
+			writeComment.add(Box.createHorizontalStrut(5));
+			writeComment.add(send);
+			mainList.add(writeComment, gbc, listIndex++);
 			for (String comment : item.getComments()) {
-				JPanel panel = new JPanel();
-				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-				JTextArea commentText = new JTextArea("#" + i + " - " + comment);
-				commentText.setEditable(false);
-				commentText.setLineWrap(true);
-				panel.add(commentText);
-				panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
-				gbc = new GridBagConstraints();
-				gbc.gridwidth = GridBagConstraints.REMAINDER;
-				gbc.weightx = 1;
-				gbc.fill = GridBagConstraints.HORIZONTAL;
-				gbc.insets = new Insets(5, 5, 5, 5);
-				mainList.add(panel, gbc, i++);
+				addComment(comment);
 			}
+		}
+
+		private void addComment(String comment) {
+			JPanel panel = new JPanel();
+			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+			JTextArea commentText = new JTextArea("#" + (listIndex - 1) + " - " + comment);
+			commentText.setEditable(false);
+			commentText.setLineWrap(true);
+			commentText.setWrapStyleWord(true);
+			panel.add(commentText);
+			panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
+			gbc = new GridBagConstraints();
+			gbc.gridwidth = GridBagConstraints.REMAINDER;
+			gbc.weightx = 1;
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.insets = new Insets(5, 5, 5, 5);
+			mainList.add(panel, gbc, listIndex++);
 		}
 	}
 }

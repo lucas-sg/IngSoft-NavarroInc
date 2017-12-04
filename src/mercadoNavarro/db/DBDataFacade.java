@@ -340,8 +340,6 @@ public class DBDataFacade {
                 e.printStackTrace();
             }
             db.disconnect();
-            ret &= modifyComments((LinkedList<String>) item.getComments(), item.getItemid());
-            ret &= modifyPictures((LinkedList<String>) item.getGallery(), item.getItemid());
         }
         return ret;
     }
@@ -393,7 +391,7 @@ public class DBDataFacade {
         return comments;
     }
 
-    private static boolean modifyComments(LinkedList<String> comments, int articleId) {
+    public static boolean modifyComments(LinkedList<String> comments, int articleId) {
 
         boolean ret = true;
         if (comments != null) {
@@ -450,7 +448,7 @@ public class DBDataFacade {
         return pictures;
     }
 
-    private static boolean modifyPictures(LinkedList<String> pictures, int articleId) {
+    public static boolean modifyPictures(LinkedList<String> pictures, int articleId) {
 
         boolean ret = true;
         if (pictures != null) {
