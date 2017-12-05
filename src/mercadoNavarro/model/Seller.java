@@ -56,4 +56,12 @@ public class Seller extends User {
     public void setPhoto(String photo) {
         this.photo = photo;
     }
+    
+    public void addItemForSale(Item item) {
+    	itemList.add(item);
+    }
+    
+    public void removeItemForSale(Item item) {
+    	itemList.remove(item);
+    }
 }

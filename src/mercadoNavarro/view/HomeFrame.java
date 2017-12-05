@@ -113,10 +113,17 @@ public class HomeFrame {
 				}
 				else if (user instanceof Seller) {
 					helloMsg.setText("Hello, " + user.getName() + " " + user.getSurname() + " (Seller)");
-					JButton cartBtn = new JButton("View For Sale List");
-					buttons.add(cartBtn);
+					JButton forSaleBtn = new JButton("View For Sale List");
+					buttons.add(forSaleBtn);
 					JButton salesBtn = new JButton("View Sold List");
 					buttons.add(salesBtn);
+					
+					forSaleBtn.addActionListener(new ActionListener() {
+		                public void actionPerformed(ActionEvent arg0) {
+		                    ForSaleFrame window = new ForSaleFrame((Seller)user);
+		                    window.frame.setVisible(true);
+		                }
+		            });
 				}
 			}
 			else if (user == null && admin != null) {
@@ -180,7 +187,7 @@ public class HomeFrame {
 				JPanel info = new JPanel();
 				info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
 				info.add(new JLabel("Name: " + article.getName()));
-				info.add(new JLabel("Price: " + article.getPrice()));
+				info.add(new JLabel("Price: $" + article.getPrice()));
 				info.add(new JLabel("Stock: " + article.getStock()));
 				JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 				JButton btn = new JButton("View Item Page");

@@ -137,24 +137,27 @@ public class DBDataFacade {
     }
 
     public static Seller getFullSeller(String email) {
-        Seller seller = (Seller) getUser(email);
+    	Seller seller = (Seller) getUser(email);
 
-        ResultSet sellerData = db.query("select * from sellers where sellerid = " + seller.getId());
-        try {
-            if (sellerData.next()) {
-                String photo = sellerData.getString("image");
-                ResultSet articles = db.query("select articleid from articles where sellerid = " + seller.getId());
-                List<Item> items = new LinkedList<>();
-                while (articles.next()) {
-                    items.add(getItem(articles.getInt("articleid"), seller));
-                    seller.setItemList(items);
-                }
-                seller.setPhoto(ImageManager.createImage(photo));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return seller;
+    	if (db.connect()) {
+    		ResultSet sellerData = db.query("select * from sellers where sellerid = " + seller.getId());
+    		try {
+    			if (sellerData.next()) {
+    				String photo = sellerData.getString("image");
+    				ResultSet articles = db.query("select articleid from articles where sellerid = " + seller.getId());
+    				List<Item> items = new LinkedList<>();
+    				while (articles.next()) {
+    					items.add(getItem(articles.getInt("articleid"), seller));
+    					seller.setItemList(items);
+    				}
+    				seller.setPhoto(ImageManager.createImage(photo));
+    			}
+    		} catch (SQLException e) {
+    			e.printStackTrace();
+    		}
+    		db.disconnect();
+    	}
+    	return seller;
     }
 
     public static boolean modifyUser(User user) {

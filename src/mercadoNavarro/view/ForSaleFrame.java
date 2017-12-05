@@ -53,21 +53,16 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
-public class CartFrame {
+public class ForSaleFrame {
 
 	JFrame frame;
-	Buyer buyer;
-	
-	JLabel priceLabel;
-	JButton confirmBtn;
+	Seller seller;
 
 	/**
 	 * Create the application.
 	 */
-	public CartFrame(Buyer buyer) {
-		this.buyer = buyer;
-		priceLabel = new JLabel();
-		confirmBtn = new JButton();
+	public ForSaleFrame(Seller seller) {
+		this.seller = DBDataFacade.getFullSeller(seller.geteMail());
 		initialize();
 	}
 
@@ -85,8 +80,8 @@ public class CartFrame {
 		JPanel articlesPane = new ArticlesPane();
 		basePane.add(articlesPane, BorderLayout.CENTER);
 		
-		JPanel confirmPane = new ConfirmPane();
-		basePane.add(confirmPane, BorderLayout.SOUTH);
+		JPanel addItemPane = new AddItemPane();
+		basePane.add(addItemPane, BorderLayout.SOUTH);
 	}
 	
 	public class ArticlesPane extends JPanel {
@@ -106,12 +101,12 @@ public class CartFrame {
 			add(new JScrollPane(mainList));
 			
 			int i = 0;
-			for (Map.Entry<Item, Integer> entry : buyer.getCart()) {
+			for (Item item : seller.getItemList()) {
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 				JPanel data = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 				JPanel img = new JPanel(new BorderLayout());
-				ImageIcon imgIcon = new ImageIcon(entry.getKey().getGallery().get(0));
+				ImageIcon imgIcon = new ImageIcon(item.getGallery().get(0));
 				Image image = imgIcon.getImage(); // transform it 
 				Image newimg = image.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 				imgIcon = new ImageIcon(newimg);  // transform it back
@@ -120,30 +115,14 @@ public class CartFrame {
 				img.add(pic);
 				JPanel info = new JPanel();
 				info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
-				info.add(new JLabel("Name: " + entry.getKey().getName()));
-				info.add(new JLabel("Price: $" + entry.getKey().getPrice()));
-				info.add(new JLabel("Stock: " + entry.getKey().getStock()));
+				info.add(new JLabel("Name: " + item.getName()));
+				info.add(new JLabel("Price: $" + item.getPrice()));
+				info.add(new JLabel("Stock: " + item.getStock()));
 				JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 				JButton btn = new JButton("View Item Page");
-				JButton btn2 = new JButton("Remove Item from Cart");
+				JButton btn2 = new JButton("Remove Item for Sale");
 				buttons.add(btn);
 				buttons.add(btn2);
-				buttons.add(new JLabel("Quantity:"));
-				SpinnerModel model = new SpinnerNumberModel(entry.getValue(), new Integer(1), new Integer(100), new Integer(1));
-				final JSpinner quantity = new JSpinner(model);
-			    JComponent comp = quantity.getEditor();
-			    JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
-			    DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
-			    formatter.setCommitsOnValidEdit(true);
-			    quantity.addChangeListener(new ChangeListener() {
-			        @Override
-			        public void stateChanged(ChangeEvent e) {
-			           quantity.setValue((Integer)quantity.getValue());
-			       	   buyer.addItemToCart(entry.getKey(), (Integer)quantity.getValue());
-			       	   priceLabel.setText("Total: $" + String.format("%.2f", buyer.getCartTotalPrice()));
-			        }
-			    });
-				buttons.add(quantity);
 				data.add(img);
 				data.add(info);
 				panel.add(data);
@@ -158,23 +137,17 @@ public class CartFrame {
 				
 				btn.addActionListener(new ActionListener() {
 					  public void actionPerformed(ActionEvent e) {
-						  ItemFrame itemWindow = new ItemFrame(entry.getKey().getItemid());
+						  ItemFrame itemWindow = new ItemFrame(item.getItemid());
 						  itemWindow.frame.setVisible(true);
 					  }
 				});
 				
 				btn2.addActionListener(new ActionListener() {
 					  public void actionPerformed(ActionEvent e) {
-						  buyer.removeItemFromCart(entry.getKey());
+						  seller.removeItemForSale(item);
 						  mainList.remove(panel);
 						  frame.validate();
 						  frame.repaint();
-						  
-						  priceLabel.setText("Total: $" + String.format("%.2f", buyer.getCartTotalPrice()));
-						  
-						  if (buyer.getCart().isEmpty()) {
-							  confirmBtn.setEnabled(false);
-						  }
 					  }
 				});
 				
@@ -183,17 +156,12 @@ public class CartFrame {
 		}
 	}
 	
-	public class ConfirmPane extends JPanel {
+	public class AddItemPane extends JPanel {
 		
-		public ConfirmPane() {
+		public AddItemPane() {
 			setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
-			priceLabel.setText("Total: $" + String.format("%.2f", buyer.getCartTotalPrice()));
-			add(priceLabel);
-			confirmBtn.setText("Confirm Buy");
-			if (buyer.getCart().isEmpty()) {
-				  confirmBtn.setEnabled(false);
-			}
-			add(confirmBtn);
+			JButton sellBtn = new JButton("Sell an Article");
+			add(sellBtn);
 		}
 	}
 }
