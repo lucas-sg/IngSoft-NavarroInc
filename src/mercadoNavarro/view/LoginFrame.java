@@ -29,7 +29,7 @@ public class LoginFrame {
      */
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(200, 200, 400, 400);
+        frame.setBounds(100, 200, 400, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel basePane = new JPanel(new BorderLayout(0, 0));
@@ -85,8 +85,6 @@ public class LoginFrame {
             JButton btnNewButton_1 = new JButton("Register");
             btnNewButton_1.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent arg0) {
-                    frame.setVisible(false); //you can't see me!
-                    frame.dispose(); //Destroy the JFrame object
                     RegisterFrame window = new RegisterFrame();
                     window.frame.setVisible(true);
                 }

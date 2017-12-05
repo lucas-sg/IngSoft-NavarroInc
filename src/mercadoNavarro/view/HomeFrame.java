@@ -125,6 +125,13 @@ public class HomeFrame {
 		                }
 		            });
 				}
+				
+				modifyBtn.addActionListener(new ActionListener() {
+	                public void actionPerformed(ActionEvent arg0) {
+	                    RegisterFrame window = new RegisterFrame(user);
+	                    window.frame.setVisible(true);
+	                }
+	            });
 			}
 			else if (user == null && admin != null) {
 				helloMsg.setText("Hello, Admin");
