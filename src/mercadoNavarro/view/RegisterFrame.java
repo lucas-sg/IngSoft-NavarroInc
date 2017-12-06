@@ -68,7 +68,7 @@ public class RegisterFrame {
 		private JTextField apellido;
 		private JTextField ndoc;
 		private JTextField calle;
-		private JTextField textField_14;
+		private JTextField foto;
 		private JTextField telefono;
 		private JTextField codigoPostal;
 		private JTextField numero;
@@ -162,10 +162,10 @@ public class RegisterFrame {
 			lblFotoDePefil.setBounds(219, 191, 77, 16);
 			add(lblFotoDePefil);
 			
-			textField_14 = new JTextField();
-			textField_14.setColumns(10);
-			textField_14.setBounds(308, 188, 116, 22);
-			add(textField_14);
+			foto = new JTextField();
+			foto.setColumns(10);
+			foto.setBounds(308, 188, 116, 22);
+			add(foto);
 			
 			JButton btnSelectPath = new JButton("Select Path...");
 			btnSelectPath.setBounds(434, 188, 116, 23);
@@ -236,8 +236,8 @@ public class RegisterFrame {
 			
 			rubro.setEditable(false);
 			rubro.setEnabled(false);
-			textField_14.setEditable(false);
-			textField_14.setEnabled(false);
+			foto.setEditable(false);
+			foto.setEnabled(false);
 			btnSelectPath.setEnabled(false);
 			
 			rdbtnNewRadioButton.addItemListener(new ItemListener() {
@@ -246,17 +246,17 @@ public class RegisterFrame {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 						rubro.setEditable(true);
 						rubro.setEnabled(true);
-						textField_14.setEditable(true);
-						textField_14.setEnabled(true);
+						//foto.setEditable(true);
+						//foto.setEnabled(true);
 						btnSelectPath.setEnabled(true);
 					}
 					else if (e.getStateChange() == ItemEvent.DESELECTED) {
 						rubro.setText("");
 						rubro.setEditable(false);
 						rubro.setEnabled(false);
-						textField_14.setText("");
-						textField_14.setEditable(false);
-						textField_14.setEnabled(false);
+						foto.setText("");
+						foto.setEditable(false);
+						foto.setEnabled(false);
 						btnSelectPath.setEnabled(false);
 					}
 				}
@@ -270,7 +270,7 @@ public class RegisterFrame {
 					    chooser.setFileFilter(filter);
 					    int returnVal = chooser.showOpenDialog(frame);
 					    if(returnVal == JFileChooser.APPROVE_OPTION) {
-					    	textField_14.setText(chooser.getSelectedFile().getName());
+					    	foto.setText(chooser.getSelectedFile().getName());
 					    }
 				  }
 			});
