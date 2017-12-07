@@ -299,10 +299,12 @@ public class DBDataFacade {
     public static Item getPartialItem(int itemId) {
         Item item = null;
         if (db.connect()) {
-            ResultSet result = db.query("select * from articles where articleid = " + itemId);
+            ResultSet result = db.query("select * from articles, user where sellerid = userid and articleid = " + itemId);
             try {
                 if (result.next()) {
                     item = createPartialItem(result);
+                    String seller = result.getString("email");
+                    item.setSeller((Seller)getUser(seller));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
