@@ -129,7 +129,7 @@ public class CartFrame {
 				buttons.add(btn);
 				buttons.add(btn2);
 				buttons.add(new JLabel("Quantity:"));
-				SpinnerModel model = new SpinnerNumberModel(entry.getValue(), new Integer(1), new Integer(100), new Integer(1));
+				SpinnerModel model = new SpinnerNumberModel(entry.getValue(), new Integer(1), new Integer(entry.getKey().getStock()), new Integer(1));
 				final JSpinner quantity = new JSpinner(model);
 			    JComponent comp = quantity.getEditor();
 			    JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);

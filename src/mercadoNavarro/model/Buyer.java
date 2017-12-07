@@ -1,6 +1,7 @@
 package mercadoNavarro.model;
 
 import mercadoNavarro.enums.DocumentType;
+import mercadoNavarro.enums.PaymentMethod;
 import mercadoNavarro.enums.PhoneType;
 
 import java.util.HashMap;
@@ -29,12 +30,12 @@ public class Buyer extends User {
     	cart.remove(item);
     }
     
-    public int confirmBuy() {
+    public int confirmBuy(PaymentMethod method) {
     	List<Sale> sales = new LinkedList<>();
     	for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
-    		if (entry.getKey().getStock()-entry.getValue() < 0)
+    		if (entry.getKey().getStock()- entry.getValue() < 0)
     			return 1;
-    		sales.add(new Sale(entry.getKey().getPrice() * entry.getValue(), entry.getKey(), this));
+    		sales.add(new Sale(entry.getValue(), entry.getKey(), this, method));
     		entry.getKey().setStock(entry.getKey().getStock() - entry.getValue());
     	}
     	

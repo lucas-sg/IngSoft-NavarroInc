@@ -2,6 +2,7 @@ package mercadoNavarro.db;
 
 import mercadoNavarro.enums.DocumentType;
 import mercadoNavarro.enums.Ordering;
+import mercadoNavarro.enums.PaymentMethod;
 import mercadoNavarro.enums.PhoneType;
 import mercadoNavarro.model.*;
 
@@ -144,7 +145,7 @@ public class DBDataFacade {
     		try {
     			if (sellerData.next()) {
     				String photo = sellerData.getString("image");
-    				ResultSet articles = db.query("select articleid from articles where sellerid = " + seller.getId());
+    				ResultSet articles = db.query("select articleid from articles where is_active = true and sellerid = " + seller.getId());
     				List<Item> items = new LinkedList<>();
     				while (articles.next()) {
     					items.add(getItem(articles.getInt("articleid"), seller));
@@ -351,7 +352,16 @@ public class DBDataFacade {
 
         boolean ret = false;
         if (db.connect()) {
-            ret = db.delete("from articles where articleid = " + item.getItemid());
+            ResultSet result = db.query("select * from sales where articleid = " + item.getItemid());
+            try {
+                if(result.next()) {
+                    ret = db.update("articles set is_active = false where articleid = " + item.getItemid());
+                }
+                else
+                    ret = db.delete("from articles where articleid = " + item.getItemid());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             db.disconnect();
         }
         return ret;
@@ -496,8 +506,8 @@ public class DBDataFacade {
         }
 
         if (db.connect()) {
-            ResultSet result = db.query("select articleid, sellerid, item_name, description, stock, pickup, price, stars from articles natural join sellers where lower(item_name) " +
-                    "like lower('%" + search + "%') " + sorting);
+            ResultSet result = db.query("select articleid, sellerid, item_name, description, stock, pickup, price, is_active ,stars from articles natural join sellers where stock <> 0" +
+                    " and is_active = true and lower(item_name) like lower('%" + search + "%') " + sorting);
             try {
                 while (result.next()) {
                     items.add(createPartialItem(result));
@@ -547,4 +557,53 @@ public class DBDataFacade {
         }
         return users;
     }
+
+    public static boolean addSale(Sale sale){
+        boolean ret = false;
+        if (db.connect()) {
+            ret = db.insert("into users(document, first_name, lastname, document_type, country, province, city, street, street_number, zip_code, phone, " +
+                    "password, email, phone_type, enabled) values(");
+            db.disconnect();
+        }
+        return ret;
+    }
+
+    private static List<Sale> getSales(int id, boolean isBuyer) {
+
+        List<Sale> sales = new LinkedList<>();
+        String searchId = isBuyer? "buyerid" : "sellerid";
+        if (db.connect()) {
+            ResultSet result = db.query("select * from sales natural join articles join users on userid = " + searchId +", users as seller where seller.userid = sellerid and " +
+                    searchId + " = " + id);
+            try {
+                while (result.next()) {
+                    String method= result.getString("method");
+                    int itemId = result.getInt("articleid");
+                    int saleId = result.getInt("saleid");
+                    String buyer = result.getString("email");
+                    int sellerId = result.getInt("sellerid");
+                    String seller = result.getString(43);
+                    int quantity = result.getInt("quantity");
+                    Item article = createPartialItem(result);
+                    article.setSeller((Seller)getUser(seller));
+                    Sale sale = new Sale(quantity,article, (Buyer)getUser(buyer) , PaymentMethod.valueOf(method.toUpperCase()));
+                    sale.setId(saleId);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            db.disconnect();
+        }
+        return sales;
+
+    }
+
+    public static List<Sale> getPurchases(int buyerId) {
+        return getSales(buyerId, true);
+    }
+
+    public static List<Sale> getSales(int sellerId) {
+        return getSales(sellerId, false);
+    }
+
 }
