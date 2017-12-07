@@ -296,6 +296,22 @@ public class DBDataFacade {
         return item;
     }
 
+    public static Item getPartialItem(int itemId) {
+        Item item = null;
+        if (db.connect()) {
+            ResultSet result = db.query("select * from articles where articleid = " + itemId);
+            try {
+                if (result.next()) {
+                    item = createPartialItem(result);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            db.disconnect();
+        }
+        return item;
+    }
+
     private static Item createItem(Seller seller, ResultSet result) throws SQLException {
 
         Item item = createPartialItem(result);
