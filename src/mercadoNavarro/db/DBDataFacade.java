@@ -59,9 +59,9 @@ public class DBDataFacade {
         boolean ret = false;
         if (db.connect()) {
             ret = db.insert("into users(document, first_name, lastname, document_type, country, province, city, street, street_number, zip_code, phone, " +
-                    "password, email, phone_type, enabled) values(" + user.getDocNumber() + ",'" + user.getName() + "','" + user.getSurname() + "','" + user.getDocType() +
+                    "password, email, phone_type, enabled) values(" + user.getDocNumber() + ",'" + user.getName() + "','" + user.getSurname() + "','" + user.getDocType().toLowerCase() +
                     "','" + user.getCountry() + "','" + user.getProvince() + "','" + user.getCity() + "','" + user.getStreet() + "'," + user.getNumber() + ",'" +
-                    user.getZipCode() + "','" + user.getTelephone() + "','" + user.getPassword() + "','" + user.geteMail() + "','" + user.getTelephoneType() + "'," +
+                    user.getZipCode() + "','" + user.getTelephone() + "','" + user.getPassword() + "','" + user.geteMail() + "','" + user.getTelephoneType().toLowerCase() + "'," +
                     user.isEnabled() + ")");
             db.disconnect();
         }
@@ -169,10 +169,10 @@ public class DBDataFacade {
             try {
                 result.next();
                 int id = result.getInt("userid");
-                ret = db.update("users set first_name = '" + user.getName() + "', lastname = '" + user.getSurname() + "', document_type = '" + user.getDocType() +
+                ret = db.update("users set first_name = '" + user.getName() + "', lastname = '" + user.getSurname() + "', document_type = '" + user.getDocType().toLowerCase() +
                         "', country = '" + user.getCountry() + "', province = '" + user.getProvince() + "', city = '" + user.getCity() + "', street = '" +
                         user.getStreet() + "', street_number = " + user.getNumber() + ", zip_code = '" + user.getZipCode() + "', phone = '" + user.getTelephone() +
-                        "', phone_type = '" + user.getTelephoneType() + "', enabled = " + user.isEnabled() + " where userid =" + id);
+                        "', phone_type = '" + user.getTelephoneType().toLowerCase() + "', enabled = " + user.isEnabled() + " where userid =" + id);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

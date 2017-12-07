@@ -4,17 +4,17 @@ public enum PhoneType {
     HOME {
         @Override
         public String toString() {
-            return "home";
+            return "Home";
         }
     }, WORK {
         @Override
         public String toString() {
-            return "work";
+            return "Work";
         }
     }, MOBILE {
         @Override
         public String toString() {
-            return "mobile";
+            return "Mobile";
         }
     }
 }

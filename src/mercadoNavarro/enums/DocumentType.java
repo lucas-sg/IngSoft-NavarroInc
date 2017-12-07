@@ -4,12 +4,12 @@ public enum DocumentType {
     DNI {
         @Override
         public String toString() {
-            return "dni";
+            return "DNI";
         }
     }, PASSPORT {
         @Override
         public String toString() {
-            return "passport";
+            return "Passport";
         }
     }
 }
