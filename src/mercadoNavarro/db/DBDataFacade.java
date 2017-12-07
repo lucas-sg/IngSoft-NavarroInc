@@ -299,7 +299,7 @@ public class DBDataFacade {
     public static Item getPartialItem(int itemId) {
         Item item = null;
         if (db.connect()) {
-            ResultSet result = db.query("select * from articles, user where sellerid = userid and articleid = " + itemId);
+            ResultSet result = db.query("select * from articles, users where sellerid = userid and articleid = " + itemId);
             try {
                 if (result.next()) {
                     item = createPartialItem(result);
