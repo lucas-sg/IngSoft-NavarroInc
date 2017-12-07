@@ -561,8 +561,8 @@ public class DBDataFacade {
     public static boolean addSale(Sale sale){
         boolean ret = false;
         if (db.connect()) {
-            ret = db.insert("into users(document, first_name, lastname, document_type, country, province, city, street, street_number, zip_code, phone, " +
-                    "password, email, phone_type, enabled) values(");
+            ret = db.insert("into sales(articleid, buyerid, quantity, total, method) values(" + sale.getArticle().getItemid() + ", " + sale.getBuyer().getId() + ", " +
+            sale.getQuantity() + ", " + sale.getTotal() + sale.getMethod().toLowerCase() + ")");
             db.disconnect();
         }
         return ret;
