@@ -602,6 +602,8 @@ public class DBDataFacade {
                     int sellerId = result.getInt("sellerid");
                     String seller = result.getString(43);
                     int quantity = result.getInt("quantity");
+                    if(!db.isConnected())
+                        db.connect();
                     Item article = createPartialItem(result);
                     article.setSeller((Seller)getUser(seller));
                     Sale sale = new Sale(quantity,article, (Buyer)getUser(buyer) , PaymentMethod.valueOf(method.toUpperCase()));
