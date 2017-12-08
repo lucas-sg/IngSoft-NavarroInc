@@ -580,7 +580,7 @@ public class DBDataFacade {
         boolean ret = false;
         if (db.connect()) {
             ret = db.insert("into sales(articleid, buyerid, quantity, total, method) values(" + sale.getArticle().getItemid() + ", " + sale.getBuyer().getId() + ", " +
-            sale.getQuantity() + ", " + sale.getTotal() + sale.getMethod().toLowerCase() + ")");
+            sale.getQuantity() + ", " + sale.getTotal() + ", '" +sale.getMethod().toLowerCase() + "')");
             db.disconnect();
         }
         return ret;
