@@ -135,7 +135,7 @@ public class HomeFrame {
 					
 					salesBtn.addActionListener(new ActionListener() {
 		                public void actionPerformed(ActionEvent arg0) {
-		                    SaledFrame window = new SaledFrame((Seller)user);
+		                    SoldFrame window = new SoldFrame((Seller)user);
 		                    window.frame.setVisible(true);
 		                }
 		            });

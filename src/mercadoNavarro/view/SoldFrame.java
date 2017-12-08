@@ -54,7 +54,7 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
-public class SaledFrame {
+public class SoldFrame {
 
 	JFrame frame;
 	Seller seller;
@@ -62,7 +62,7 @@ public class SaledFrame {
 	/**
 	 * Create the application.
 	 */
-	public SaledFrame(Seller seller) {
+	public SoldFrame(Seller seller) {
 		this.seller = DBDataFacade.getFullSeller(seller.geteMail());
 		initialize();
 	}
