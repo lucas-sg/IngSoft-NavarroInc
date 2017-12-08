@@ -591,7 +591,7 @@ public class DBDataFacade {
         List<Sale> sales = new LinkedList<>();
         String searchId = isBuyer? "buyerid" : "sellerid";
         if (db.connect()) {
-            ResultSet result = db.query("select * from sales natural join articles join users on userid = " + searchId +", users as seller where seller.userid = sellerid and " +
+            ResultSet result = db.query("select * from sales natural join articles join users on userid = buyerid, users as seller where seller.userid = sellerid and " +
                     searchId + " = " + id);
             try {
                 while (result.next()) {
