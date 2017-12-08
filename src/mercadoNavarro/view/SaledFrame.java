@@ -29,9 +29,8 @@ import javax.swing.JTextField;
 
 import mercadoNavarro.db.DBDataFacade;
 import mercadoNavarro.enums.Ordering;
-import mercadoNavarro.enums.PaymentMethod;
-import mercadoNavarro.enums.PhoneType;
 import mercadoNavarro.model.Item;
+import mercadoNavarro.model.Sale;
 import mercadoNavarro.model.Seller;
 
 import javax.swing.BoxLayout;
@@ -55,22 +54,16 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 
-public class CartFrame {
+public class SaledFrame {
 
 	JFrame frame;
-	Buyer buyer;
-	
-	JLabel priceLabel;
-	JButton confirmBtn;
+	Seller seller;
 
 	/**
 	 * Create the application.
 	 */
-	public CartFrame(Buyer buyer) {
-		this.buyer = buyer;
-		
-		priceLabel = new JLabel();
-		confirmBtn = new JButton();
+	public SaledFrame(Seller seller) {
+		this.seller = DBDataFacade.getFullSeller(seller.geteMail());
 		initialize();
 	}
 
@@ -86,10 +79,7 @@ public class CartFrame {
 		frame.setContentPane(basePane);
 		
 		JPanel articlesPane = new ArticlesPane();
-		basePane.add(articlesPane, BorderLayout.CENTER);
-		
-		JPanel confirmPane = new ConfirmPane();
-		basePane.add(confirmPane, BorderLayout.SOUTH);
+		basePane.add(articlesPane);
 	}
 	
 	public class ArticlesPane extends JPanel {
@@ -109,14 +99,12 @@ public class CartFrame {
 			add(new JScrollPane(mainList));
 			
 			int i = 0;
-			for (Map.Entry<Integer, Integer> entry : buyer.getCart()) {
-				Item aux = DBDataFacade.getPartialItem(entry.getKey());
-				
+			for (Sale sale : DBDataFacade.getSales(seller.getId())) {
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 				JPanel data = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 				JPanel img = new JPanel(new BorderLayout());
-				ImageIcon imgIcon = new ImageIcon(aux.getGallery().get(0));
+				ImageIcon imgIcon = new ImageIcon(sale.getArticle().getGallery().get(0));
 				Image image = imgIcon.getImage(); // transform it 
 				Image newimg = image.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 				imgIcon = new ImageIcon(newimg);  // transform it back
@@ -125,30 +113,11 @@ public class CartFrame {
 				img.add(pic);
 				JPanel info = new JPanel();
 				info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
-				info.add(new JLabel("Name: " + aux.getName()));
-				info.add(new JLabel("Price: $" + aux.getPrice()));
-				info.add(new JLabel("Stock: " + aux.getStock()));
+				info.add(new JLabel("Name: " + sale.getArticle().getName()));
+				info.add(new JLabel("Price: $" + sale.getArticle().getPrice()));
 				JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 				JButton btn = new JButton("View Item Page");
-				JButton btn2 = new JButton("Remove Item from Cart");
 				buttons.add(btn);
-				buttons.add(btn2);
-				buttons.add(new JLabel("Quantity:"));
-				SpinnerModel model = new SpinnerNumberModel(entry.getValue(), new Integer(1), new Integer(aux.getStock()), new Integer(1));
-				final JSpinner quantity = new JSpinner(model);
-			    JComponent comp = quantity.getEditor();
-			    JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
-			    DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
-			    formatter.setCommitsOnValidEdit(true);
-			    quantity.addChangeListener(new ChangeListener() {
-			        @Override
-			        public void stateChanged(ChangeEvent e) {
-			           quantity.setValue((Integer)quantity.getValue());
-			       	   buyer.addItemToCart(entry.getKey(), (Integer)quantity.getValue());
-			       	   priceLabel.setText("Total: $" + String.format("%.2f", buyer.getCartTotalPrice()));
-			        }
-			    });
-				buttons.add(quantity);
 				data.add(img);
 				data.add(info);
 				panel.add(data);
@@ -163,61 +132,13 @@ public class CartFrame {
 				
 				btn.addActionListener(new ActionListener() {
 					  public void actionPerformed(ActionEvent e) {
-						  ItemFrame itemWindow = new ItemFrame(entry.getKey());
+						  ItemFrame itemWindow = new ItemFrame(sale.getArticle().getItemid());
 						  itemWindow.frame.setVisible(true);
-					  }
-				});
-				
-				btn2.addActionListener(new ActionListener() {
-					  public void actionPerformed(ActionEvent e) {
-						  buyer.removeItemFromCart(entry.getKey());
-						  mainList.remove(panel);
-						  frame.validate();
-						  frame.repaint();
-						  
-						  priceLabel.setText("Total: $" + String.format("%.2f", buyer.getCartTotalPrice()));
-						  
-						  if (buyer.getCart().isEmpty()) {
-							  confirmBtn.setEnabled(false);
-						  }
 					  }
 				});
 				
 				i++;
 			}	
-		}
-	}
-	
-	public class ConfirmPane extends JPanel {
-		
-		public ConfirmPane() {
-			setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
-			priceLabel.setText("Total: $" + String.format("%.2f", buyer.getCartTotalPrice()));
-			add(priceLabel);
-			
-			add(new JLabel("Payment Method:"));
-			
-			JComboBox payMethod = new JComboBox(PaymentMethod.values());
-			add(payMethod);
-			
-			confirmBtn.setText("Confirm Buy");
-			if (buyer.getCart().isEmpty()) {
-				  confirmBtn.setEnabled(false);
-			}
-			
-			add(confirmBtn);
-			
-			confirmBtn.addActionListener(new ActionListener() {
-				  public void actionPerformed(ActionEvent e) {
-					  buyer.confirmBuy((PaymentMethod)payMethod.getSelectedItem());
-					  
-					  CartFrame window = new CartFrame(buyer);
-					  window.frame.setVisible(true);
-
-					  frame.setVisible(false);
-					  frame.dispose();
-				  }
-			});
 		}
 	}
 }

@@ -2,6 +2,12 @@ package mercadoNavarro.enums;
 
 
 public enum Ordering {
+	DEFAULT {
+        @Override
+        public String toString() {
+            return "";
+        }
+    },
     LOWEST_PRICE {
         @Override
         public String toString() {
@@ -16,11 +22,6 @@ public enum Ordering {
         @Override
         public String toString() {
             return "Stars";
-        }
-    }, DEFAULT {
-        @Override
-        public String toString() {
-            return "";
         }
     }
 }

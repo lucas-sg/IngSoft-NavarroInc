@@ -1,5 +1,6 @@
 package mercadoNavarro.model;
 
+import mercadoNavarro.db.DBDataFacade;
 import mercadoNavarro.enums.DocumentType;
 import mercadoNavarro.enums.PaymentMethod;
 import mercadoNavarro.enums.PhoneType;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 public class Buyer extends User {
 
-	private Map<Item, Integer> cart;
+	private Map<Integer, Integer> cart;
 
     public Buyer(String name, String password, String surname, String eMail, String country, String province, String
             city, String street, Integer number, String zipCode, String telephone, String docNumber,
@@ -22,21 +23,37 @@ public class Buyer extends User {
         cart = new HashMap<>();
     }
 
-    public void addItemToCart(Item item, int count) {
-    	cart.put(item, count);
+    public void addItemToCart(int itemid, int count) {
+    	cart.put(itemid, count);
     }
     
-    public void removeItemFromCart(Item item) {
-    	cart.remove(item);
+    public void removeItemFromCart(int itemid) {
+    	cart.remove(itemid);
     }
     
     public int confirmBuy(PaymentMethod method) {
-    	List<Sale> sales = new LinkedList<>();
-    	for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
+    	LinkedList<Sale> sales = new LinkedList<>();
+    	
+    	HashMap<Item, Integer> itemcart = new HashMap<>();
+    	for (Map.Entry<Integer, Integer> entry : getCart()) 
+			itemcart.put(DBDataFacade.getPartialItem(entry.getKey()), entry.getValue());
+    	
+    	//check quantity
+    	for (Map.Entry<Item, Integer> entry : itemcart.entrySet()) {
     		if (entry.getKey().getStock()- entry.getValue() < 0)
     			return 1;
+    		
+    		entry.getKey().setStock(entry.getKey().getStock()- entry.getValue());
     		sales.add(new Sale(entry.getValue(), entry.getKey(), this, method));
-    		entry.getKey().setStock(entry.getKey().getStock() - entry.getValue());
+    	}
+    	
+    	for (Sale sale : sales) {
+    		//add sale
+    		if (DBDataFacade.addSale(sale)) {
+    			//modify item
+    			DBDataFacade.modifyItem(sale.getArticle());
+    			cart.remove(sale.getArticle().getItemid());
+    		}
     	}
     	
     	return 0;
@@ -51,14 +68,15 @@ public class Buyer extends User {
     public double getCartTotalPrice() {
     	double total = 0;
     	
-    	for (Map.Entry<Item, Integer> entry : cart.entrySet()) {
-    		total += entry.getKey().getPrice() * entry.getValue();
+    	for (Map.Entry<Integer, Integer> entry : cart.entrySet()) {
+    		Item aux = DBDataFacade.getPartialItem(entry.getKey());
+    		total += aux.getPrice() * entry.getValue();
     	}
     	
     	return total;
     }
     
-    public Set<Map.Entry<Item, Integer>> getCart() {
+    public Set<Map.Entry<Integer, Integer>> getCart() {
     	return cart.entrySet();
     }
     

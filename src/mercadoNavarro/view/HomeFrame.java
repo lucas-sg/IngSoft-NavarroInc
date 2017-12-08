@@ -25,6 +25,7 @@ import javax.swing.JTextField;
 
 import mercadoNavarro.db.DBDataFacade;
 import mercadoNavarro.enums.Ordering;
+import mercadoNavarro.enums.PaymentMethod;
 import mercadoNavarro.model.Item;
 import mercadoNavarro.model.Seller;
 
@@ -110,6 +111,13 @@ public class HomeFrame {
 		                    window.frame.setVisible(true);
 		                }
 		            });
+					
+					salesBtn.addActionListener(new ActionListener() {
+		                public void actionPerformed(ActionEvent arg0) {
+		                    BoughtFrame window = new BoughtFrame((Buyer)user);
+		                    window.frame.setVisible(true);
+		                }
+		            });
 				}
 				else if (user instanceof Seller) {
 					helloMsg.setText("Hello, " + user.getName() + " " + user.getSurname() + " (Seller)");
@@ -121,6 +129,13 @@ public class HomeFrame {
 					forSaleBtn.addActionListener(new ActionListener() {
 		                public void actionPerformed(ActionEvent arg0) {
 		                    ForSaleFrame window = new ForSaleFrame((Seller)user);
+		                    window.frame.setVisible(true);
+		                }
+		            });
+					
+					salesBtn.addActionListener(new ActionListener() {
+		                public void actionPerformed(ActionEvent arg0) {
+		                    SaledFrame window = new SaledFrame((Seller)user);
 		                    window.frame.setVisible(true);
 		                }
 		            });
@@ -231,7 +246,7 @@ public class HomeFrame {
 				
 				btn2.addActionListener(new ActionListener() {
 					  public void actionPerformed(ActionEvent e) {
-						  ((Buyer)user).addItemToCart(article, 1);
+						  ((Buyer)user).addItemToCart(article.getItemid(), 1);
 						  btn2.setText("Already added to Cart");
 						  btn2.setEnabled(false);
 					  }
@@ -258,8 +273,7 @@ public class HomeFrame {
 			
 			JLabel lblOrderBy = new JLabel("Order by:");
 			
-			JComboBox comboBox = new JComboBox();
-			comboBox.setModel(new DefaultComboBoxModel(new String[] {"", "Lowest Price", "Stars", "Pickup"}));
+			JComboBox comboBox = new JComboBox(Ordering.values());
 			
 			JButton btnSearch = new JButton("Search");
 			GroupLayout groupLayout = new GroupLayout(this);
@@ -299,24 +313,7 @@ public class HomeFrame {
 			btnSearch.addActionListener(new ActionListener() {
 				  public void actionPerformed(ActionEvent e) {
 					  JPanel articlesPane;
-					  switch((String)comboBox.getSelectedItem()) {
-					  	case "Lowest Price": {
-					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.LOWEST_PRICE);
-					  		break;
-					  	}
-					  	case "Stars": {
-					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.STARS);
-					  		break;
-					  	}
-					  	case "Pickup": {
-					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.PICKUP);
-					  		break;
-					  	}
-					  	default: {
-					  		articlesPane = new ArticlesPane(textField.getText(), Ordering.DEFAULT);
-					  		break;
-					  	}
-					  }
+					  articlesPane = new ArticlesPane(textField.getText(), (Ordering)comboBox.getSelectedItem());
 					  
 					  BorderLayout layout = (BorderLayout)frame.getContentPane().getLayout();
 					  frame.getContentPane().remove(layout.getLayoutComponent(BorderLayout.CENTER));
