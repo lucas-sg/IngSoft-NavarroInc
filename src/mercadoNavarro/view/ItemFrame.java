@@ -167,14 +167,26 @@ public class ItemFrame {
 			JButton send = new JButton("Comment");
 			send.addActionListener(new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {
-					String comment = commentText.getText();
-					if(comment != "") {
-						if(item.addComment(comment)) {
-							addComment(comment);
-							commentText.setText("");
+				public void actionPerformed(ActionEvent e) {			
+					Runnable action = new Runnable() {
+						public void run() {
+							try {
+								String comment = commentText.getText();
+								if(comment != "") {
+									if(item.addComment(comment)) {
+										addComment(comment);
+										commentText.setText("");
+									}
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
-					}
+					};
+
+					ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+					loading.setLocationRelativeTo(frame);
+					loading.setVisible(true);
 				}
 			});
 			writeComment.add(scrollPane);
