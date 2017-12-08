@@ -57,12 +57,36 @@ public class HomeFrame {
 	 */
 	public HomeFrame(User user) {
 		this.user = user;
-		initialize();
+		Runnable action = new Runnable() {
+			public void run() {
+				try {
+					initialize();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+		loading.setLocationRelativeTo(frame);
+		loading.setVisible(true);
 	}
 
 	public HomeFrame(Admin admin) {
 		this.admin = admin;
-		initialize();
+		Runnable action = new Runnable() {
+			public void run() {
+				try {
+					initialize();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+		loading.setLocationRelativeTo(frame);
+		loading.setVisible(true);
 	}
 
 	/**
@@ -309,18 +333,30 @@ public class HomeFrame {
 						.addContainerGap(204, Short.MAX_VALUE))
 			);
 			setLayout(groupLayout);
-			
+
 			btnSearch.addActionListener(new ActionListener() {
-				  public void actionPerformed(ActionEvent e) {
-					  JPanel articlesPane;
-					  articlesPane = new ArticlesPane(textField.getText(), (Ordering)comboBox.getSelectedItem());
-					  
-					  BorderLayout layout = (BorderLayout)frame.getContentPane().getLayout();
-					  frame.getContentPane().remove(layout.getLayoutComponent(BorderLayout.CENTER));
-					  frame.getContentPane().add(articlesPane, BorderLayout.CENTER);
-					  frame.validate();
-					  frame.repaint();
-				  }
+				public void actionPerformed(ActionEvent e) {			  
+					Runnable action = new Runnable() {
+						public void run() {
+							try {
+								JPanel articlesPane;
+								articlesPane = new ArticlesPane(textField.getText(), (Ordering)comboBox.getSelectedItem());
+
+								BorderLayout layout = (BorderLayout)frame.getContentPane().getLayout();
+								frame.getContentPane().remove(layout.getLayoutComponent(BorderLayout.CENTER));
+								frame.getContentPane().add(articlesPane, BorderLayout.CENTER);
+								frame.validate();
+								frame.repaint();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					};
+
+					ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+					loading.setLocationRelativeTo(frame);
+					loading.setVisible(true);
+				}
 			});
 		}
 		

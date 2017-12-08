@@ -62,8 +62,19 @@ public class ForSaleFrame {
 	 * Create the application.
 	 */
 	public ForSaleFrame(Seller seller) {
-		this.seller = DBDataFacade.getFullSeller(seller.geteMail());
-		initialize();
+		Runnable action = new Runnable() {
+			public void run() {
+				try {
+					initialize();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+		loading.setLocationRelativeTo(frame);
+		loading.setVisible(true);
 	}
 
 	/**
@@ -73,6 +84,8 @@ public class ForSaleFrame {
 		frame = new JFrame();
 		frame.setBounds(300, 300, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		seller = DBDataFacade.getFullSeller(seller.geteMail());
 		
 		JPanel basePane = new JPanel(new BorderLayout(0,0));
 		frame.setContentPane(basePane);
@@ -141,16 +154,28 @@ public class ForSaleFrame {
 						  itemWindow.frame.setVisible(true);
 					  }
 				});
-				
+
 				btn2.addActionListener(new ActionListener() {
-					  public void actionPerformed(ActionEvent e) {
-						  seller.removeItemForSale(item);
-						  mainList.remove(panel);
-						  frame.validate();
-						  frame.repaint();
-					  }
+					public void actionPerformed(ActionEvent e) {			  
+						Runnable action = new Runnable() {
+							public void run() {
+								try {
+									seller.removeItemForSale(item);
+									mainList.remove(panel);
+									frame.validate();
+									frame.repaint();
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						};
+
+						ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+						loading.setLocationRelativeTo(frame);
+						loading.setVisible(true);
+					}
 				});
-				
+
 				i++;
 			}	
 		}

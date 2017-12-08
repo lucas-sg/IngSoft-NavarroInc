@@ -63,8 +63,19 @@ public class SoldFrame {
 	 * Create the application.
 	 */
 	public SoldFrame(Seller seller) {
-		this.seller = DBDataFacade.getFullSeller(seller.geteMail());
-		initialize();
+		Runnable action = new Runnable() {
+			public void run() {
+				try {
+					initialize();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+		loading.setLocationRelativeTo(frame);
+		loading.setVisible(true);
 	}
 
 	/**
@@ -74,6 +85,8 @@ public class SoldFrame {
 		frame = new JFrame();
 		frame.setBounds(300, 300, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		seller = DBDataFacade.getFullSeller(seller.geteMail());
 		
 		JPanel basePane = new JPanel(new BorderLayout(0,0));
 		frame.setContentPane(basePane);

@@ -64,7 +64,19 @@ public class BoughtFrame {
 	 */
 	public BoughtFrame(Buyer buyer) {
 		this.buyer = buyer;
-		initialize();
+		Runnable action = new Runnable() {
+			public void run() {
+				try {
+					initialize();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+		loading.setLocationRelativeTo(frame);
+		loading.setVisible(true);
 	}
 
 	/**

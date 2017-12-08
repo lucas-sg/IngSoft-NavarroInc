@@ -71,7 +71,20 @@ public class CartFrame {
 		
 		priceLabel = new JLabel();
 		confirmBtn = new JButton();
-		initialize();
+		
+		Runnable action = new Runnable() {
+			public void run() {
+				try {
+					initialize();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+		loading.setLocationRelativeTo(frame);
+		loading.setVisible(true);
 	}
 
 	/**
@@ -141,12 +154,24 @@ public class CartFrame {
 			    DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
 			    formatter.setCommitsOnValidEdit(true);
 			    quantity.addChangeListener(new ChangeListener() {
-			        @Override
-			        public void stateChanged(ChangeEvent e) {
-			           quantity.setValue((Integer)quantity.getValue());
-			       	   buyer.addItemToCart(entry.getKey(), (Integer)quantity.getValue());
-			       	   priceLabel.setText("Total: $" + String.format("%.2f", buyer.getCartTotalPrice()));
-			        }
+			    	@Override
+			    	public void stateChanged(ChangeEvent e) {	       	
+			    		Runnable action = new Runnable() {
+			    			public void run() {
+			    				try {
+			    					quantity.setValue((Integer)quantity.getValue());
+			    					buyer.addItemToCart(entry.getKey(), (Integer)quantity.getValue());
+			    					priceLabel.setText("Total: $" + String.format("%.2f", buyer.getCartTotalPrice()));
+			    				} catch (Exception e) {
+			    					e.printStackTrace();
+			    				}
+			    			}
+			    		};
+
+			    		ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+			    		loading.setLocationRelativeTo(frame);
+			    		loading.setVisible(true);
+			    	}
 			    });
 				buttons.add(quantity);
 				data.add(img);
@@ -170,16 +195,28 @@ public class CartFrame {
 				
 				btn2.addActionListener(new ActionListener() {
 					  public void actionPerformed(ActionEvent e) {
-						  buyer.removeItemFromCart(entry.getKey());
-						  mainList.remove(panel);
-						  frame.validate();
-						  frame.repaint();
-						  
-						  priceLabel.setText("Total: $" + String.format("%.2f", buyer.getCartTotalPrice()));
-						  
-						  if (buyer.getCart().isEmpty()) {
-							  confirmBtn.setEnabled(false);
-						  }
+						  Runnable action = new Runnable() {
+							  public void run() {
+								  try {
+									  buyer.removeItemFromCart(entry.getKey());
+									  mainList.remove(panel);
+									  frame.validate();
+									  frame.repaint();
+
+									  priceLabel.setText("Total: $" + String.format("%.2f", buyer.getCartTotalPrice()));
+
+									  if (buyer.getCart().isEmpty()) {
+										  confirmBtn.setEnabled(false);
+									  }
+								  } catch (Exception e) {
+									  e.printStackTrace();
+								  }
+							  }
+						  };
+
+						  ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+						  loading.setLocationRelativeTo(frame);
+						  loading.setVisible(true);
 					  }
 				});
 				
@@ -208,15 +245,27 @@ public class CartFrame {
 			add(confirmBtn);
 			
 			confirmBtn.addActionListener(new ActionListener() {
-				  public void actionPerformed(ActionEvent e) {
-					  buyer.confirmBuy((PaymentMethod)payMethod.getSelectedItem());
-					  
-					  CartFrame window = new CartFrame(buyer);
-					  window.frame.setVisible(true);
+				public void actionPerformed(ActionEvent e) {  
+					Runnable action = new Runnable() {
+						public void run() {
+							try {
+								buyer.confirmBuy((PaymentMethod)payMethod.getSelectedItem());
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					};
 
-					  frame.setVisible(false);
-					  frame.dispose();
-				  }
+					ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+					loading.setLocationRelativeTo(frame);
+					loading.setVisible(true);
+
+					CartFrame window = new CartFrame(buyer);
+					window.frame.setVisible(true);
+
+					frame.setVisible(false);
+					frame.dispose();
+				}
 			});
 		}
 	}

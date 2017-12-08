@@ -38,7 +38,19 @@ public class ItemFrame {
 	 * Create the application.
 	 */
 	public ItemFrame(int itemId) {
-		initialize(itemId);
+		Runnable action = new Runnable() {
+			public void run() {
+				try {
+					initialize(itemId);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+		loading.setLocationRelativeTo(frame);
+		loading.setVisible(true);
 	}
 
 	/**

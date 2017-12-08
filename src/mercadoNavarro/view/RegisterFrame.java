@@ -37,11 +37,35 @@ public class RegisterFrame {
 	 * Create the application.
 	 */
 	public RegisterFrame() {
-		initialize(null);
+		Runnable action = new Runnable() {
+			public void run() {
+				try {
+					initialize(null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+		loading.setLocationRelativeTo(frame);
+		loading.setVisible(true);
 	}
 	
 	public RegisterFrame(User user) {
-		initialize(user);
+		Runnable action = new Runnable() {
+			public void run() {
+				try {
+					initialize(user);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+
+		ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+		loading.setLocationRelativeTo(frame);
+		loading.setVisible(true);
 	}
 
 	/**
