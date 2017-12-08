@@ -104,7 +104,7 @@ public class ForSaleFrame {
 			for (Item item : seller.getItemList()) {
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-				JPanel data = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+				JPanel data = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
 				JPanel img = new JPanel(new BorderLayout());
 				ImageIcon imgIcon = new ImageIcon(item.getGallery().get(0));
 				Image image = imgIcon.getImage(); // transform it 

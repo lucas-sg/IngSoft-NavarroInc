@@ -102,7 +102,7 @@ public class SoldFrame {
 			for (Sale sale : DBDataFacade.getSales(seller.getId())) {
 				JPanel panel = new JPanel();
 				panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-				JPanel data = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+				JPanel data = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
 				JPanel img = new JPanel(new BorderLayout());
 				ImageIcon imgIcon = new ImageIcon(sale.getArticle().getGallery().get(0));
 				Image image = imgIcon.getImage(); // transform it 
@@ -111,15 +111,28 @@ public class SoldFrame {
 				JLabel pic = new JLabel();
 				pic.setIcon(imgIcon);
 				img.add(pic);
-				JPanel info = new JPanel();
-				info.setLayout(new BoxLayout(info, BoxLayout.Y_AXIS));
-				info.add(new JLabel("Name: " + sale.getArticle().getName()));
-				info.add(new JLabel("Price: $" + sale.getArticle().getPrice()));
+				JPanel itemInfo = new JPanel();
+				itemInfo.setLayout(new BoxLayout(itemInfo, BoxLayout.Y_AXIS));
+				itemInfo.add(new JLabel("Item Info"));
+				itemInfo.add(new JLabel("Name: " + sale.getArticle().getName()));
+				itemInfo.add(new JLabel("Price: $" + sale.getArticle().getPrice()));
+				itemInfo.add(new JLabel("Quantity: " + sale.getQuantity()));
+				itemInfo.add(new JLabel("Total Price: $" + sale.getTotal()));
+				itemInfo.add(new JLabel("Payment Method: " + sale.getMethod()));
+				JPanel buyerInfo = new JPanel();
+				buyerInfo.setLayout(new BoxLayout(buyerInfo, BoxLayout.Y_AXIS));
+				buyerInfo.add(new JLabel("Buyer Info"));
+				buyerInfo.add(new JLabel("Name: " + sale.getBuyer().getName() + " " + sale.getBuyer().getSurname() + " (" + sale.getBuyer().geteMail() + ")"));
+				buyerInfo.add(new JLabel("Doc. Number: " + sale.getBuyer().getDocNumber() + " (" + sale.getBuyer().getDocType() + ")"));
+				buyerInfo.add(new JLabel("Address: " + sale.getBuyer().getStreet() + " " + sale.getBuyer().getNumber() + " (" + sale.getBuyer().getZipCode() + ")"));
+				buyerInfo.add(new JLabel("City: " + sale.getBuyer().getCity() + " - " + sale.getBuyer().getProvince() + " - " + sale.getBuyer().getCountry()));
+				buyerInfo.add(new JLabel("Tel: " + sale.getBuyer().getTelephone() + " (" + sale.getBuyer().getTelephoneType() + ")"));
 				JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 				JButton btn = new JButton("View Item Page");
 				buttons.add(btn);
 				data.add(img);
-				data.add(info);
+				data.add(itemInfo);
+				data.add(buyerInfo);
 				panel.add(data);
 				panel.add(buttons);
 				panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
