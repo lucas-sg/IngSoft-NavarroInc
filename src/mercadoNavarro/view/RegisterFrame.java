@@ -193,9 +193,22 @@ public class RegisterFrame {
 			foto.setBounds(320, 188, 116, 22);
 			add(foto);
 			
-			JButton btnSelectPath = new JButton("Select Path...");
+			JButton btnSelectPath = new JButton("Select File...");
 			btnSelectPath.setBounds(446, 188, 116, 23);
 			add(btnSelectPath);
+			
+			JFileChooser chooser = new JFileChooser();
+		    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+		        "JPG Images", "jpg");
+		    chooser.setFileFilter(filter);
+			btnSelectPath.addActionListener(new ActionListener() {
+				  public void actionPerformed(ActionEvent e) {
+					    int returnVal = chooser.showOpenDialog(frame);
+					    if(returnVal == JFileChooser.APPROVE_OPTION) {
+					    	foto.setText(chooser.getSelectedFile().getName());
+					    }
+				  }
+			});
 			
 			JLabel lblRubro = new JLabel("Category");
 			lblRubro.setBounds(220, 156, 77, 16);
@@ -292,7 +305,7 @@ public class RegisterFrame {
 						rubro.setEditable(true);
 						rubro.setEnabled(true);
 						//foto.setEditable(true);
-						//foto.setEnabled(true);
+						foto.setEnabled(true);
 						btnSelectPath.setEnabled(true);
 					}
 					else if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -305,19 +318,6 @@ public class RegisterFrame {
 						btnSelectPath.setEnabled(false);
 					}
 				}
-			});
-			
-			btnSelectPath.addActionListener(new ActionListener() {
-				  public void actionPerformed(ActionEvent e) {
-					    JFileChooser chooser = new JFileChooser();
-					    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-					        "JPG & PNG Images", "jpg", "pgn");
-					    chooser.setFileFilter(filter);
-					    int returnVal = chooser.showOpenDialog(frame);
-					    if(returnVal == JFileChooser.APPROVE_OPTION) {
-					    	foto.setText(chooser.getSelectedFile().getName());
-					    }
-				  }
 			});
 			
 			if(user != null) {
@@ -352,65 +352,89 @@ public class RegisterFrame {
 				
 				btnNewButton.setText("Modify");
 				btnNewButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						boolean dataValid = false;
-						if(checkFields()) {
-							String pass = new String(password.getPassword());
-							user.setName(nombre.getText());
-							user.setSurname(apellido.getText());
-							user.setCountry(pais.getText());
-							user.setProvince(provincia.getText());
-							user.setCity(localidad.getText());
-							user.setStreet(calle.getText());
-							user.setNumber(Integer.parseInt(numero.getText()));
-							user.setZipCode(codigoPostal.getText());
-							user.setTelephone(telefono.getText());
-							user.setTelephoneType(PhoneType.valueOf(telType.getSelectedItem().toString().toUpperCase()));
-							if(rdbtnNewRadioButton.isSelected()) {
-								((Seller) user).setCategory(rubro.getText());
-								dataValid = DBDataFacade.modifySeller((Seller)user);
-							} else
-								dataValid = DBDataFacade.modifyUser(user);
-							if(dataValid) {
-								frame.setVisible(false); //you can't see me!
-								frame.dispose(); //Destroy the JFrame object
+					public void actionPerformed(ActionEvent arg0) {					
+						Runnable action = new Runnable() {
+							public void run() {
+								try {
+									boolean dataValid = false;
+									if(checkFields()) {
+										String pass = new String(password.getPassword());
+										user.setName(nombre.getText());
+										user.setSurname(apellido.getText());
+										user.setCountry(pais.getText());
+										user.setProvince(provincia.getText());
+										user.setCity(localidad.getText());
+										user.setStreet(calle.getText());
+										user.setNumber(Integer.parseInt(numero.getText()));
+										user.setZipCode(codigoPostal.getText());
+										user.setTelephone(telefono.getText());
+										user.setTelephoneType(PhoneType.valueOf(telType.getSelectedItem().toString().toUpperCase()));
+										if(rdbtnNewRadioButton.isSelected()) {
+											((Seller) user).setCategory(rubro.getText());
+											dataValid = DBDataFacade.modifySeller((Seller)user);
+										} else
+											dataValid = DBDataFacade.modifyUser(user);
+										if(dataValid) {
+											frame.setVisible(false); //you can't see me!
+											frame.dispose(); //Destroy the JFrame object
+										}
+										else
+											error.setText("Invalid data or connection error");
+									}
+									else
+										error.setText("All fields are required");
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 							}
-							else
-								error.setText("Invalid data or connection error");
-						}
-						else
-							error.setText("All fields are required");
+						};
+
+						ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+						loading.setLocationRelativeTo(frame);
+						loading.setVisible(true);
 					}
 				});
 			}
 			else {
 				btnNewButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						boolean dataValid = false;
-						if(checkFields()) {
-							String pass = new String(password.getPassword());
-							if(rdbtnNewRadioButton.isSelected()) {
-								Seller seller = new Seller(nombre.getText(),pass,apellido.getText(), Email.getText(), pais.getText(), provincia.getText(), localidad.getText()
-								, calle.getText(), Integer.parseInt(numero.getText()), codigoPostal.getText(), telefono.getText(), ndoc.getText(),
-										PhoneType.valueOf(telType.getSelectedItem().toString().toUpperCase()), DocumentType.valueOf(tipoDoc.getSelectedItem().toString().toUpperCase()));
-								seller.setPhoto(foto.getText());
-								dataValid = DBDataFacade.addSeller(seller);
+					public void actionPerformed(ActionEvent arg0) {						
+						Runnable action = new Runnable() {
+							public void run() {
+								try {
+									boolean dataValid = false;
+									if(checkFields()) {
+										String pass = new String(password.getPassword());
+										if(rdbtnNewRadioButton.isSelected()) {
+											Seller seller = new Seller(nombre.getText(),pass,apellido.getText(), Email.getText(), pais.getText(), provincia.getText(), localidad.getText()
+											, calle.getText(), Integer.parseInt(numero.getText()), codigoPostal.getText(), telefono.getText(), ndoc.getText(),
+													PhoneType.valueOf(telType.getSelectedItem().toString().toUpperCase()), DocumentType.valueOf(tipoDoc.getSelectedItem().toString().toUpperCase()));
+											seller.setPhoto(chooser.getSelectedFile().getAbsolutePath());
+											dataValid = DBDataFacade.addSeller(seller);
+										}
+										else {
+											Buyer buyer = new Buyer(nombre.getText(), pass, apellido.getText(), Email.getText(), pais.getText(), provincia.getText(), localidad.getText()
+													, calle.getText(), Integer.parseInt(numero.getText()), codigoPostal.getText(), telefono.getText(), ndoc.getText(),
+													PhoneType.valueOf(telType.getSelectedItem().toString().toUpperCase()), DocumentType.valueOf(tipoDoc.getSelectedItem().toString().toUpperCase()));
+											dataValid = DBDataFacade.addUser(buyer);
+										}
+										if(dataValid) {
+											frame.setVisible(false); //you can't see me!
+											frame.dispose(); //Destroy the JFrame object
+										}
+										else
+											error.setText("Invalid data or connection error");
+									}
+									else
+										error.setText("All fields are required");
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 							}
-							else {
-								Buyer buyer = new Buyer(nombre.getText(), pass, apellido.getText(), Email.getText(), pais.getText(), provincia.getText(), localidad.getText()
-										, calle.getText(), Integer.parseInt(numero.getText()), codigoPostal.getText(), telefono.getText(), ndoc.getText(),
-										PhoneType.valueOf(telType.getSelectedItem().toString().toUpperCase()), DocumentType.valueOf(tipoDoc.getSelectedItem().toString().toUpperCase()));
-								dataValid = DBDataFacade.addUser(buyer);
-							}
-							if(dataValid) {
-								frame.setVisible(false); //you can't see me!
-								frame.dispose(); //Destroy the JFrame object
-							}
-							else
-								error.setText("Invalid data or connection error");
-						}
-						else
-							error.setText("All fields are required");
+						};
+
+						ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+						loading.setLocationRelativeTo(frame);
+						loading.setVisible(true);
 					}
 				});
 			}

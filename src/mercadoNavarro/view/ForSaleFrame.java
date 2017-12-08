@@ -65,7 +65,7 @@ public class ForSaleFrame {
 		Runnable action = new Runnable() {
 			public void run() {
 				try {
-					initialize();
+					initialize(seller);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -80,12 +80,12 @@ public class ForSaleFrame {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(Seller seller) {
 		frame = new JFrame();
 		frame.setBounds(300, 300, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
-		seller = DBDataFacade.getFullSeller(seller.geteMail());
+		this.seller = DBDataFacade.getFullSeller(seller.geteMail());
 		
 		JPanel basePane = new JPanel(new BorderLayout(0,0));
 		frame.setContentPane(basePane);
@@ -133,9 +133,11 @@ public class ForSaleFrame {
 				info.add(new JLabel("Stock: " + item.getStock()));
 				JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 				JButton btn = new JButton("View Item Page");
-				JButton btn2 = new JButton("Remove Item for Sale");
+				JButton btn2 = new JButton("Modify Item Info");
+				JButton btn3 = new JButton("Remove Item for Sale");
 				buttons.add(btn);
 				buttons.add(btn2);
+				buttons.add(btn3);
 				data.add(img);
 				data.add(info);
 				panel.add(data);
@@ -154,8 +156,15 @@ public class ForSaleFrame {
 						  itemWindow.frame.setVisible(true);
 					  }
 				});
-
+				
 				btn2.addActionListener(new ActionListener() {
+					  public void actionPerformed(ActionEvent e) {
+						  AddItemFrame itemWindow = new AddItemFrame(seller, item.getItemid());
+						  itemWindow.frame.setVisible(true);
+					  }
+				});
+
+				btn3.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {			  
 						Runnable action = new Runnable() {
 							public void run() {
@@ -187,6 +196,13 @@ public class ForSaleFrame {
 			setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
 			JButton sellBtn = new JButton("Sell an Article");
 			add(sellBtn);
+			
+			sellBtn.addActionListener(new ActionListener() {
+				  public void actionPerformed(ActionEvent e) {
+					  AddItemFrame addItemWindow = new AddItemFrame(seller);
+					  addItemWindow.frame.setVisible(true);
+				  }
+			});
 		}
 	}
 }

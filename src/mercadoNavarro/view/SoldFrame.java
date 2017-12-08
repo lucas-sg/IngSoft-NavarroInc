@@ -66,7 +66,7 @@ public class SoldFrame {
 		Runnable action = new Runnable() {
 			public void run() {
 				try {
-					initialize();
+					initialize(seller);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -81,12 +81,12 @@ public class SoldFrame {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(Seller seller) {
 		frame = new JFrame();
 		frame.setBounds(300, 300, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
-		seller = DBDataFacade.getFullSeller(seller.geteMail());
+		this.seller = DBDataFacade.getFullSeller(seller.geteMail());
 		
 		JPanel basePane = new JPanel(new BorderLayout(0,0));
 		frame.setContentPane(basePane);

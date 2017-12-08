@@ -61,7 +61,7 @@ public class ItemFrame {
 		frame.setBounds(200, 200, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
-		item = DBDataFacade.getItem(itemId);
+		this.item = DBDataFacade.getItem(itemId);
 		
 		JPanel basePane = new JPanel(new BorderLayout(0, 0));
 		frame.setContentPane(basePane);

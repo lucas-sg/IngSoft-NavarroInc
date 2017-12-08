@@ -80,8 +80,20 @@ public class AdminFrame {
 				checkBox.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						user.setEnabled(checkBox.isSelected());
-						DBDataFacade.modifyUser(user);
+						Runnable action = new Runnable() {
+							public void run() {
+								try {
+									user.setEnabled(checkBox.isSelected());
+									DBDataFacade.modifyUser(user);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						};
+
+						ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+						loading.setLocationRelativeTo(frame);
+						loading.setVisible(true);
 					}
 				});
 			}

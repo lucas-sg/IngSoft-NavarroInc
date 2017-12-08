@@ -124,9 +124,9 @@ public class HomeFrame {
 				buttons.add(modifyBtn);
 				if (user instanceof Buyer) {
 					helloMsg.setText("Hello, " + user.getName() + " " + user.getSurname() + " (Buyer)");
-					JButton cartBtn = new JButton("View Cart List");
+					JButton cartBtn = new JButton("Cart");
 					buttons.add(cartBtn);
-					JButton salesBtn = new JButton("View Bought List");
+					JButton salesBtn = new JButton("Bought List");
 					buttons.add(salesBtn);
 					
 					cartBtn.addActionListener(new ActionListener() {
@@ -145,9 +145,9 @@ public class HomeFrame {
 				}
 				else if (user instanceof Seller) {
 					helloMsg.setText("Hello, " + user.getName() + " " + user.getSurname() + " (Seller)");
-					JButton forSaleBtn = new JButton("View For Sale List");
+					JButton forSaleBtn = new JButton("Sell an Article");
 					buttons.add(forSaleBtn);
-					JButton salesBtn = new JButton("View Sold List");
+					JButton salesBtn = new JButton("Sold List");
 					buttons.add(salesBtn);
 					
 					forSaleBtn.addActionListener(new ActionListener() {
