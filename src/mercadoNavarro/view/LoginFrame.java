@@ -64,31 +64,44 @@ public class LoginFrame {
             JButton btnNewButton = new JButton("Login");
             btnNewButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent arg0) {
-                    User u = null;
-                    Admin a = null;
-                    HomeFrame window = null;
-                    String user = textField_1.getText();
-                    String password = new String(textField.getPassword());
-                    if ((u = DBDataFacade.getUser(user)) != null) {
-                        if(!u.isEnabled())
-                            showError(3);
-                        else if (u.getPassword().equals(password)) {
-                            frame.setVisible(false);
-                            frame.dispose();
-                            window = new HomeFrame(u);
-                            window.frame.setVisible(true);
-                        } else
-                            showError(1);
-                    } else if ((a = DBDataFacade.getAdmin(user)) != null) {
-                        if (a.getPassword().equals(password)) {
-                            frame.setVisible(false);
-                            frame.dispose();
-                            window = new HomeFrame(a);
-                            window.frame.setVisible(true);
-                        }
-                    } else {
-                        showError(2);
-                    }
+                    Runnable action = new Runnable() {
+                    	public void run() {
+                    		try {
+                                User u = null;
+                                Admin a = null;
+                                HomeFrame window = null;
+                                String user = textField_1.getText();
+                                String password = new String(textField.getPassword());
+                                if ((u = DBDataFacade.getUser(user)) != null) {
+                                    if(!u.isEnabled())
+                                        showError(3);
+                                    else if (u.getPassword().equals(password)) {
+                                        frame.setVisible(false);
+                                        frame.dispose();
+                                        window = new HomeFrame(u);
+                                        window.frame.setVisible(true);
+                                    } else
+                                        showError(1);
+                                } else if ((a = DBDataFacade.getAdmin(user)) != null) {
+                                    if (a.getPassword().equals(password)) {
+                                        frame.setVisible(false);
+                                        frame.dispose();
+                                        window = new HomeFrame(a);
+                                        window.frame.setVisible(true);
+                                    }
+                                } else {
+                                    showError(2);
+                                }
+                                
+                    		} catch (Exception e) {
+                    			e.printStackTrace();
+                    		}
+                    	}
+                    };
+
+                    ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+                    loading.setLocationRelativeTo(frame);
+                    loading.setVisible(true);
                 }
             });
             btnNewButton.setBounds(117, 213, 97, 25);
