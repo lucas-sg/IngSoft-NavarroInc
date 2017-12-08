@@ -1,31 +1,20 @@
 package mercadoNavarro.view;
 
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
+import javax.swing.*;
 
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import javax.swing.JTextPane;
+import java.text.ParseException;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.MaskFormatter;
 
 import mercadoNavarro.db.DBDataFacade;
 import mercadoNavarro.enums.DocumentType;
 import mercadoNavarro.enums.PhoneType;
-import mercadoNavarro.model.Buyer;
-import mercadoNavarro.model.Item;
-import mercadoNavarro.model.Seller;
-import mercadoNavarro.model.User;
-
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
+import mercadoNavarro.model.*;
 
 public class RegisterFrame {
 
@@ -86,16 +75,23 @@ public class RegisterFrame {
 	}
 
 	public class RegisterPane extends JPanel {
-		private JTextField Email;
-		private JTextField password;
-		private JTextField nombre;
-		private JTextField apellido;
-		private JTextField ndoc;
-		private JTextField calle;
-		private JTextField foto;
-		private JTextField telefono;
-		private JTextField codigoPostal;
-		private JTextField numero;
+		JTextField Email;
+		JPasswordField password;
+		JTextField nombre;
+		JTextField apellido;
+		JTextField ndoc;
+		JTextField calle;
+		JTextField provincia;
+		JTextField rubro;
+		JTextField pais;
+		JTextField localidad;
+		JTextField foto;
+		JRadioButton rdbtnNewRadioButton;
+		JFormattedTextField telefono;
+		JTextField codigoPostal;
+		JTextField numero;
+		JLabel error;
+		MaskFormatter telephoneMask;
 
 		/**
 		 * Create the panel.
@@ -108,8 +104,14 @@ public class RegisterFrame {
 			Email.setBounds(94, 13, 116, 22);
 			add(Email);
 			Email.setColumns(10);
-			
-			password = new JTextField();
+
+			error = new JLabel();
+			error.setBounds(250, 230, 250, 22);
+			error.setHorizontalAlignment(SwingConstants.LEFT);
+			error.setForeground(Color.RED);
+			add(error);
+
+			password = new JPasswordField();
 			password.setColumns(10);
 			password.setBounds(94, 48, 116, 22);
 			add(password);
@@ -138,7 +140,7 @@ public class RegisterFrame {
 			btnNewButton.setBounds(165, 393, 97, 25);
 			add(btnNewButton);
 			
-			JRadioButton rdbtnNewRadioButton = new JRadioButton("Proveedor");
+			rdbtnNewRadioButton = new JRadioButton("Seller");
 			rdbtnNewRadioButton.setBounds(165, 359, 127, 25);
 			add(rdbtnNewRadioButton);
 			
@@ -150,112 +152,131 @@ public class RegisterFrame {
 			lblPassword.setBounds(10, 51, 72, 16);
 			add(lblPassword);
 			
-			JLabel lblNombre = new JLabel("Nombre");
+			JLabel lblNombre = new JLabel("Name");
 			lblNombre.setBounds(10, 86, 72, 16);
 			add(lblNombre);
 			
-			JLabel lblApellido = new JLabel("Apellido");
+			JLabel lblApellido = new JLabel("Surname");
 			lblApellido.setBounds(10, 121, 72, 16);
 			add(lblApellido);
 			
-			JLabel lblTipoDeDoc = new JLabel("Tipo de Doc");
+			JLabel lblTipoDeDoc = new JLabel("ID Type");
 			lblTipoDeDoc.setBounds(10, 156, 72, 16);
 			add(lblTipoDeDoc);
 			
-			JLabel lblNdoc = new JLabel("N\u00B0Doc");
+			JLabel lblNdoc = new JLabel("ID Number");
 			lblNdoc.setBounds(10, 191, 72, 16);
 			add(lblNdoc);
 			
-			JLabel lblPais = new JLabel("Pais");
+			JLabel lblPais = new JLabel("Country");
 			lblPais.setBounds(10, 226, 72, 16);
 			add(lblPais);
 			
-			JLabel lblProvincia = new JLabel("Provincia");
+			JLabel lblProvincia = new JLabel("Province");
 			lblProvincia.setBounds(10, 261, 72, 16);
 			add(lblProvincia);
 			
-			JLabel lblLocalidad = new JLabel("Localidad");
+			JLabel lblLocalidad = new JLabel("City");
 			lblLocalidad.setBounds(10, 296, 72, 16);
 			add(lblLocalidad);
 			
-			JLabel lblCalle = new JLabel("Calle");
+			JLabel lblCalle = new JLabel("Street");
 			lblCalle.setBounds(10, 331, 72, 16);
 			add(lblCalle);
 			
-			JLabel lblFotoDePefil = new JLabel("Foto de Perfil");
-			lblFotoDePefil.setBounds(219, 191, 77, 16);
+			JLabel lblFotoDePefil = new JLabel("Profile Picture");
+			lblFotoDePefil.setBounds(220, 191, 100, 16);
 			add(lblFotoDePefil);
 			
 			foto = new JTextField();
 			foto.setColumns(10);
-			foto.setBounds(308, 188, 116, 22);
+			foto.setBounds(320, 188, 116, 22);
 			add(foto);
 			
 			JButton btnSelectPath = new JButton("Select Path...");
-			btnSelectPath.setBounds(434, 188, 116, 23);
+			btnSelectPath.setBounds(446, 188, 116, 23);
 			add(btnSelectPath);
 			
-			JLabel lblRubro = new JLabel("Rubro");
-			lblRubro.setBounds(219, 156, 77, 16);
+			JLabel lblRubro = new JLabel("Category");
+			lblRubro.setBounds(220, 156, 77, 16);
 			add(lblRubro);
 			
-			JLabel lblTipoDeTel = new JLabel("Tipo de Tel");
-			lblTipoDeTel.setBounds(220, 121, 76, 16);
+			JLabel lblTipoDeTel = new JLabel("Telephone Type");
+			lblTipoDeTel.setBounds(220, 121, 100, 16);
 			add(lblTipoDeTel);
 			
-			JLabel lblTelefono = new JLabel("Telefono");
+			JLabel lblTelefono = new JLabel("Telephone");
 			lblTelefono.setBounds(220, 86, 76, 16);
 			add(lblTelefono);
 			
-			telefono = new JTextField();
-			telefono.setColumns(10);
-			telefono.setBounds(308, 83, 116, 22);
-			add(telefono);
-			
-			JLabel lblCodigoPostal = new JLabel("Codigo Postal");
-			lblCodigoPostal.setBounds(219, 51, 77, 16);
+			JLabel lblCodigoPostal = new JLabel("Zip Code");
+			lblCodigoPostal.setBounds(220, 51, 77, 16);
 			add(lblCodigoPostal);
 			
 			codigoPostal = new JTextField();
 			codigoPostal.setColumns(10);
-			codigoPostal.setBounds(308, 48, 116, 22);
+			codigoPostal.setBounds(320, 48, 116, 22);
 			add(codigoPostal);
 			
 			numero = new JTextField();
 			numero.setColumns(10);
-			numero.setBounds(308, 13, 116, 22);
+			numero.setBounds(320, 13, 116, 22);
 			add(numero);
 			
-			JLabel lblNumero = new JLabel("Numero");
-			lblNumero.setBounds(220, 16, 76, 16);
+			JLabel lblNumero = new JLabel("Street Number");
+			lblNumero.setBounds(220, 16, 100, 16);
 			add(lblNumero);
 			
 			JComboBox tipoDoc = new JComboBox(DocumentType.values());
 			tipoDoc.setBounds(94, 153, 116, 22);
 			add(tipoDoc);
 			
-			JTextField pais = new JTextField();
+			pais = new JTextField();
 			pais.setColumns(10);
 			pais.setBounds(94, 223, 116, 22);
 			add(pais);
 			
-			JTextField provincia = new JTextField();
+			provincia = new JTextField();
 			provincia.setColumns(10);
 			provincia.setBounds(94, 258, 116, 22);
 			add(provincia);
 			
-			JTextField localidad = new JTextField();
+			localidad = new JTextField();
 			localidad.setColumns(10);
 			localidad.setBounds(94, 293, 116, 22);
 			add(localidad);
 			
 			JComboBox telType = new JComboBox(PhoneType.values());
-			telType.setBounds(308, 118, 116, 22);
+			telType.setBounds(320, 118, 116, 22);
 			add(telType);
-			
-			JTextField rubro = new JTextField();
+
+			try {
+				telephoneMask = new MaskFormatter(((PhoneType)telType.getSelectedItem()).equals(PhoneType.MOBILE)? "##-####-####" : "####-####");
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			telephoneMask.setPlaceholderCharacter('_');
+
+			telType.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						telephoneMask.setMask(((PhoneType)telType.getSelectedItem()).equals(PhoneType.MOBILE)? "##-####-####" : "####-####");
+						telephoneMask.install(telefono);
+					} catch (ParseException e1) {
+						e1.printStackTrace();
+					}
+				}
+			});
+
+			telefono = new JFormattedTextField(telephoneMask);
+			telefono.setColumns(10);
+			telefono.setBounds(320, 83, 116, 22);
+			add(telefono);
+
+			rubro = new JTextField();
 			rubro.setColumns(10);
-			rubro.setBounds(308, 153, 116, 22);
+			rubro.setBounds(320, 153, 116, 22);
 			add(rubro);
 			
 			rubro.setEditable(false);
@@ -326,26 +347,84 @@ public class RegisterFrame {
 				ndoc.setEditable(false);
 				ndoc.setEnabled(false);
 				tipoDoc.setEnabled(false);
+				foto.setEnabled(false);
 				rdbtnNewRadioButton.setEnabled(false);
 				
 				btnNewButton.setText("Modify");
 				btnNewButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						frame.setVisible(false); //you can't see me!
-						frame.dispose(); //Destroy the JFrame object
-						//update db
+						boolean dataValid = false;
+						if(checkFields()) {
+							String pass = new String(password.getPassword());
+							user.setName(nombre.getText());
+							user.setSurname(apellido.getText());
+							user.setCountry(pais.getText());
+							user.setProvince(provincia.getText());
+							user.setCity(localidad.getText());
+							user.setStreet(calle.getText());
+							user.setNumber(Integer.parseInt(numero.getText()));
+							user.setZipCode(codigoPostal.getText());
+							user.setTelephone(telefono.getText());
+							user.setTelephoneType(PhoneType.valueOf(telType.getSelectedItem().toString().toUpperCase()));
+							if(rdbtnNewRadioButton.isSelected()) {
+								((Seller) user).setCategory(rubro.getText());
+								dataValid = DBDataFacade.modifySeller((Seller)user);
+							} else
+								dataValid = DBDataFacade.modifyUser(user);
+							if(dataValid) {
+								frame.setVisible(false); //you can't see me!
+								frame.dispose(); //Destroy the JFrame object
+							}
+							else
+								error.setText("Invalid data or connection error");
+						}
+						else
+							error.setText("All fields are required");
 					}
 				});
 			}
 			else {
 				btnNewButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						frame.setVisible(false); //you can't see me!
-						frame.dispose(); //Destroy the JFrame object
-						//update db
+						boolean dataValid = false;
+						if(checkFields()) {
+							String pass = new String(password.getPassword());
+							if(rdbtnNewRadioButton.isSelected()) {
+								Seller seller = new Seller(nombre.getText(),pass,apellido.getText(), Email.getText(), pais.getText(), provincia.getText(), localidad.getText()
+								, calle.getText(), Integer.parseInt(numero.getText()), codigoPostal.getText(), telefono.getText(), ndoc.getText(),
+										PhoneType.valueOf(telType.getSelectedItem().toString().toUpperCase()), DocumentType.valueOf(tipoDoc.getSelectedItem().toString().toUpperCase()));
+								seller.setPhoto(foto.getText());
+								dataValid = DBDataFacade.addSeller(seller);
+							}
+							else {
+								Buyer buyer = new Buyer(nombre.getText(), pass, apellido.getText(), Email.getText(), pais.getText(), provincia.getText(), localidad.getText()
+										, calle.getText(), Integer.parseInt(numero.getText()), codigoPostal.getText(), telefono.getText(), ndoc.getText(),
+										PhoneType.valueOf(telType.getSelectedItem().toString().toUpperCase()), DocumentType.valueOf(tipoDoc.getSelectedItem().toString().toUpperCase()));
+								dataValid = DBDataFacade.addUser(buyer);
+							}
+							if(dataValid) {
+								frame.setVisible(false); //you can't see me!
+								frame.dispose(); //Destroy the JFrame object
+							}
+							else
+								error.setText("Invalid data or connection error");
+						}
+						else
+							error.setText("All fields are required");
 					}
 				});
 			}
+		}
+
+		public boolean checkFields() {
+			String pass = new String(password.getPassword());
+			if(Email.getText().trim().equals("") || pass.trim().equals("") || nombre.getText().trim().equals("") || apellido.getText().trim().equals("") ||
+					ndoc.getText().trim().equals("") || calle.getText().trim().equals("") || provincia.getText().trim().equals("") || pais.getText().trim().equals("") ||
+					localidad.getText().trim().equals("") || telefono.getText().trim().equals("") || codigoPostal.getText().trim().equals("") || numero.getText().trim().equals(""))
+				return false;
+			if(rdbtnNewRadioButton.isSelected() && (rubro.getText().trim().equals("") || foto.getText().trim().equals("")))
+				return false;
+			return true;
 		}
 	}
 }

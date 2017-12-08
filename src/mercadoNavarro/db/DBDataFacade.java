@@ -183,21 +183,21 @@ public class DBDataFacade {
 
     public static boolean modifySeller(Seller seller) {
 
-        boolean ret = false;
+        boolean ret = true;
         ret = modifyUser(seller);
 
-        LinkedList<Item> aux = (LinkedList<Item>) seller.getItemList();
+        //LinkedList<Item> aux = (LinkedList<Item>) seller.getItemList();
 
         if (db.connect()) {
-            LinkedList<Item> toAdd = (LinkedList<Item>) aux.clone();
+            //LinkedList<Item> toAdd = (LinkedList<Item>) aux.clone();
             ResultSet result = db.query("select userid from users where email = '" + seller.geteMail() + "'");
             try {
                 result.next();
                 int id = result.getInt("userid");
-                ResultSet items = db.query("select * from articles where sellerid = " + id);
-                ret &= db.update("sellers set category = '" + seller.getCategory() + "', stars = " + seller.getStars() + ", image = '" +
-                        ImageManager.encodeImage(seller.getPhoto()) + "' where sellerid = " + id);
-                while (items.next()) {
+                //ResultSet items = db.query("select * from articles where sellerid = " + id);
+                ret = db.update("sellers set category = '" + seller.getCategory() + "', stars = " + seller.getStars() /*+ ", image = '" +
+                        ImageManager.encodeImage(seller.getPhoto())*/ + " where sellerid = " + id);
+               /* while (items.next()) {
                     int itemId = items.getInt("articleid");
                     Item i = getItem(itemId);
                     if (i.getItemid() == null) {
@@ -215,14 +215,14 @@ public class DBDataFacade {
                         toAdd.remove(i);
                     else
                         ret &= db.delete("from articles where articleid =" + itemId);
-                }
+                }*/
             } catch (SQLException e) {
                 e.printStackTrace();
             }
             db.disconnect();
-            for (Item item : toAdd) {
+            /*for (Item item : toAdd) {
                 ret &= addItem(item);
-            }
+            }*/
         }
         return ret;
 
@@ -589,6 +589,8 @@ public class DBDataFacade {
     private static List<Sale> getSales(int id, boolean isBuyer) {
 
         List<Sale> sales = new LinkedList<>();
+        Buyer buyer = null;
+        Seller seller = null;
         String searchId = isBuyer? "buyerid" : "sellerid";
         if (db.connect()) {
             ResultSet result = db.query("select * from sales natural join articles join users on userid = buyerid, users as seller where seller.userid = sellerid and " +
@@ -596,17 +598,19 @@ public class DBDataFacade {
             try {
                 while (result.next()) {
                     String method= result.getString("method");
-                    int itemId = result.getInt("articleid");
                     int saleId = result.getInt("saleid");
-                    String buyer = result.getString("email");
-                    int sellerId = result.getInt("sellerid");
-                    String seller = result.getString(43);
+                    String buyerEmail = result.getString("email");
+                    String sellerEmail = result.getString(43);
                     int quantity = result.getInt("quantity");
                     if(!db.isConnected())
                         db.connect();
                     Item article = createPartialItem(result);
-                    article.setSeller((Seller)getUser(seller));
-                    Sale sale = new Sale(quantity,article, (Buyer)getUser(buyer) , PaymentMethod.valueOf(method.toUpperCase()));
+                    if(isBuyer || seller == null)
+                        seller = (Seller)getUser(sellerEmail);
+                    if(!isBuyer || buyer == null)
+                        buyer = (Buyer)getUser(buyerEmail);
+                    article.setSeller(seller);
+                    Sale sale = new Sale(quantity,article, buyer , PaymentMethod.valueOf(method.toUpperCase()));
                     sale.setId(saleId);
                     sales.add(sale);
                 }

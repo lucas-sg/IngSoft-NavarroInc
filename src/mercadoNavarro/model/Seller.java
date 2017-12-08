@@ -19,6 +19,7 @@ public class Seller extends User {
         super(name, password, surname, eMail, country, province, city, street, number, zipCode, telephone, docNumber,
                 telephoneType, docType);
         itemList = new LinkedList<>();
+        stars = 2;
     }
 
     public List<Item> getItemList() {
