@@ -76,6 +76,14 @@ public class AdminFrame {
 				JCheckBox checkBox = new JCheckBox(user.getName() + " " + user.getSurname() + " (" + user.geteMail() + ")");
 				checkBox.setSelected(user.isEnabled());
 				panel.add(checkBox);
+
+				checkBox.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						user.setEnabled(checkBox.isSelected());
+						DBDataFacade.modifyUser(user);
+					}
+				});
 			}
 			panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
 			add(new JScrollPane(panel));
