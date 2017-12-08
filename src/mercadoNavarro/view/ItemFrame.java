@@ -91,17 +91,35 @@ public class ItemFrame {
 	public class InfoPane extends JPanel {
 		
 		public InfoPane() {
-			setLayout(new BorderLayout(0, 0));
+			FlowLayout layout = new FlowLayout(FlowLayout.LEFT, 20, 10);
+			layout.setAlignOnBaseline(true);
+			setLayout(layout);
 
-			JPanel panel = new JPanel();
-			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-			panel.add(new JLabel("Name: " + item.getName()));
-			panel.add(new JLabel("Description: " + item.getDescription()));
-			panel.add(new JLabel("Stock: " + item.getStock()));
-			panel.add(new JLabel("Pickup: " + item.getPickup()));
-			panel.add(new JLabel("Price: " + item.getPrice()));
+			JPanel itemInfo = new JPanel();
+			itemInfo.setLayout(new BoxLayout(itemInfo, BoxLayout.Y_AXIS));
+			itemInfo.add(new JLabel("Item Info"));
+			itemInfo.add(new JLabel("Name: " + item.getName()));
+			itemInfo.add(new JLabel("Description: " + item.getDescription()));
+			itemInfo.add(new JLabel("Stock: " + item.getStock()));
+			itemInfo.add(new JLabel("Pickup: " + item.getPickup()));
+			itemInfo.add(new JLabel("Price: " + item.getPrice()));
 			
-			add(panel);
+			JPanel sellerInfo = new JPanel();
+			sellerInfo.setLayout(new BoxLayout(sellerInfo, BoxLayout.Y_AXIS));
+			sellerInfo.add(new JLabel("Seller Info"));
+			sellerInfo.add(new JLabel("Name: " + item.getSeller().getName() + " " + item.getSeller().getSurname()));
+			sellerInfo.add(new JLabel(item.getSeller().getPhoto()));
+			//ImageIcon imgIcon = new ImageIcon(item.getSeller().getPhoto());
+			ImageIcon imgIcon = new ImageIcon(item.getGallery().get(0));
+			Image image = imgIcon.getImage(); // transform it 
+			Image newimg = image.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			imgIcon = new ImageIcon(newimg);  // transform it back
+			JLabel pic = new JLabel();
+			pic.setIcon(imgIcon);
+			sellerInfo.add(pic);
+			
+			add(itemInfo);
+			add(sellerInfo);
 		}
 	}
 	
