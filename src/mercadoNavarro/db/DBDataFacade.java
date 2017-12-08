@@ -608,6 +608,7 @@ public class DBDataFacade {
                     article.setSeller((Seller)getUser(seller));
                     Sale sale = new Sale(quantity,article, (Buyer)getUser(buyer) , PaymentMethod.valueOf(method.toUpperCase()));
                     sale.setId(saleId);
+                    sales.add(sale);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
