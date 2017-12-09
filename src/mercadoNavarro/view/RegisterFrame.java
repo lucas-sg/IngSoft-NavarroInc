@@ -295,7 +295,6 @@ public class RegisterFrame {
 			rubro.setEditable(false);
 			rubro.setEnabled(false);
 			foto.setEditable(false);
-			foto.setEnabled(false);
 			btnSelectPath.setEnabled(false);
 			
 			rdbtnNewRadioButton.addItemListener(new ItemListener() {
@@ -304,8 +303,6 @@ public class RegisterFrame {
 					if (e.getStateChange() == ItemEvent.SELECTED) {
 						rubro.setEditable(true);
 						rubro.setEnabled(true);
-						//foto.setEditable(true);
-						foto.setEnabled(true);
 						btnSelectPath.setEnabled(true);
 					}
 					else if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -313,8 +310,6 @@ public class RegisterFrame {
 						rubro.setEditable(false);
 						rubro.setEnabled(false);
 						foto.setText("");
-						foto.setEditable(false);
-						foto.setEnabled(false);
 						btnSelectPath.setEnabled(false);
 					}
 				}
@@ -347,8 +342,8 @@ public class RegisterFrame {
 				ndoc.setEditable(false);
 				ndoc.setEnabled(false);
 				tipoDoc.setEnabled(false);
-				foto.setEnabled(false);
 				rdbtnNewRadioButton.setEnabled(false);
+				btnSelectPath.setEnabled(false);
 				
 				btnNewButton.setText("Modify");
 				btnNewButton.addActionListener(new ActionListener() {

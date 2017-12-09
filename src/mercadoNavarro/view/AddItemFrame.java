@@ -137,7 +137,7 @@ public class AddItemFrame {
 						for (File file : chooser.getSelectedFiles()) {
 							if (i != 0)
 								sb.append("; ");
-							sb.append(file.getAbsoluteFile());
+							sb.append(file.getAbsolutePath());
 							i++;
 						}
 						Fotos.setText(new String(sb));
@@ -198,9 +198,9 @@ public class AddItemFrame {
 				quantity.setValue(new Integer(item.getStock()));
 				Pickup.setText(item.getPickup());
 				Precio.setText(String.format("%.2f", item.getPrice()));
-				Fotos.setText(".");
+				Fotos.setText("");
 				Fotos.setEnabled(false);
-				chooser.setEnabled(false);
+				btnSelectPath.setEnabled(false);
 
 				Confirm.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
