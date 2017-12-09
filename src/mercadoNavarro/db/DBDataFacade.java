@@ -137,21 +137,33 @@ public class DBDataFacade {
         return user;
     }
 
+    public static Seller addSellerPicture(Seller seller) {
+
+        if (db.connect()) {
+            ResultSet sellerData = db.query("select * from sellers where sellerid = " + seller.getId());
+            try {
+                if (sellerData.next()) {
+                    String photo = sellerData.getString("image");
+                    seller.setPhoto(ImageManager.createImage(photo));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            db.disconnect();
+        }
+        return seller;
+    }
+
     public static Seller getFullSeller(String email) {
     	Seller seller = (Seller) getUser(email);
-
+        seller = addSellerPicture(seller);
     	if (db.connect()) {
-    		ResultSet sellerData = db.query("select * from sellers where sellerid = " + seller.getId());
+            ResultSet articles = db.query("select articleid from articles where is_active = true and sellerid = " + seller.getId());
+            List<Item> items = new LinkedList<>();
     		try {
-    			if (sellerData.next()) {
-    				String photo = sellerData.getString("image");
-    				ResultSet articles = db.query("select articleid from articles where is_active = true and sellerid = " + seller.getId());
-    				List<Item> items = new LinkedList<>();
-    				while (articles.next()) {
-    					items.add(getItem(articles.getInt("articleid"), seller));
-    					seller.setItemList(items);
-    				}
-    				seller.setPhoto(ImageManager.createImage(photo));
+                while (articles.next()) {
+                    items.add(getItem(articles.getInt("articleid"), seller));
+                    seller.setItemList(items);
     			}
     		} catch (SQLException e) {
     			e.printStackTrace();

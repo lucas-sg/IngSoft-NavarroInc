@@ -62,6 +62,7 @@ public class ItemFrame {
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		this.item = DBDataFacade.getItem(itemId);
+		item.setSeller(DBDataFacade.addSellerPicture(item.getSeller()));
 		
 		JPanel basePane = new JPanel(new BorderLayout(0, 0));
 		frame.setContentPane(basePane);
@@ -108,9 +109,7 @@ public class ItemFrame {
 			sellerInfo.setLayout(new BoxLayout(sellerInfo, BoxLayout.Y_AXIS));
 			sellerInfo.add(new JLabel("Seller Info"));
 			sellerInfo.add(new JLabel("Name: " + item.getSeller().getName() + " " + item.getSeller().getSurname()));
-			sellerInfo.add(new JLabel(item.getSeller().getPhoto()));
-			//ImageIcon imgIcon = new ImageIcon(item.getSeller().getPhoto());
-			ImageIcon imgIcon = new ImageIcon(item.getGallery().get(0));
+			ImageIcon imgIcon = new ImageIcon(item.getSeller().getPhoto());
 			Image image = imgIcon.getImage(); // transform it 
 			Image newimg = image.getScaledInstance(64, 64,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
 			imgIcon = new ImageIcon(newimg);  // transform it back

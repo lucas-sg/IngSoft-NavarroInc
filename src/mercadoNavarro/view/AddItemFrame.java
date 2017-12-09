@@ -102,11 +102,11 @@ public class AddItemFrame {
 		public InfoPane() {
 			setLayout(null);
 			
-			JLabel lblNewLabel = new JLabel("Nombre");
+			JLabel lblNewLabel = new JLabel("Name");
 			lblNewLabel.setBounds(10, 54, 156, 16);
 			add(lblNewLabel);
 			
-			JLabel lblCaracteristicas = new JLabel("Caracteristicas");
+			JLabel lblCaracteristicas = new JLabel("Description");
 			lblCaracteristicas.setBounds(10, 81, 156, 16);
 			add(lblCaracteristicas);
 			
@@ -114,7 +114,7 @@ public class AddItemFrame {
 			lblStock.setBounds(10, 146, 156, 16);
 			add(lblStock);
 			
-			JLabel lblImagenDelProducto = new JLabel("Imagenes del producto");
+			JLabel lblImagenDelProducto = new JLabel("Product Images");
 			lblImagenDelProducto.setBounds(10, 173, 156, 16);
 			add(lblImagenDelProducto);
 			
@@ -154,7 +154,7 @@ public class AddItemFrame {
 			lblPickup.setBounds(10, 215, 156, 16);
 			add(lblPickup);
 			
-			JLabel lblPrecio = new JLabel("Precio");
+			JLabel lblPrecio = new JLabel("Price");
 			lblPrecio.setBounds(10, 258, 156, 16);
 			add(lblPrecio);
 			
@@ -170,7 +170,7 @@ public class AddItemFrame {
 			add(scrollPane);
 			
 			Nombre = new JTextField();
-			Nombre.setBounds(176, 51, 116, 22);
+			Nombre.setBounds(176, 51, 387, 22);
 			add(Nombre);
 			Nombre.setColumns(10);
 			
