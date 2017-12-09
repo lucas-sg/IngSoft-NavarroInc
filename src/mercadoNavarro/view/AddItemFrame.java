@@ -199,7 +199,7 @@ public class AddItemFrame {
 				quantity.setValue(new Integer(item.getStock()));
 				Pickup.setText(item.getPickup());
 				Precio.setText(String.format("%.2f", item.getPrice()));
-				Fotos.setText("");
+				Fotos.setText(".");
 				Fotos.setEnabled(false);
 				btnSelectPath.setEnabled(false);
 
