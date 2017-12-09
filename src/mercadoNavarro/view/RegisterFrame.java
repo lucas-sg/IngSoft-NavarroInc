@@ -62,7 +62,8 @@ public class RegisterFrame {
 	 */
 	private void initialize(User user) {
 		frame = new JFrame();
-		frame.setBounds(200, 200, 800, 600);
+		frame.setBounds(200, 200, 650, 500);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		JPanel basePane = new JPanel(new BorderLayout(0,0));

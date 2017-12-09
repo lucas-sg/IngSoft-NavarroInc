@@ -62,7 +62,8 @@ public class AddItemFrame {
 	 */
 	private void initialize(Seller seller, Integer itemId) {
 		frame = new JFrame();
-		frame.setBounds(100, 200, 800, 600);
+		frame.setBounds(200, 200, 600, 400);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		this.seller = seller;

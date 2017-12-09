@@ -41,7 +41,9 @@ public class LoginFrame {
      */
     private void initialize() {
         frame = new JFrame();
-        frame.setBounds(100, 200, 400, 400);
+        frame.setSize(400, 350);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel basePane = new JPanel(new BorderLayout(0, 0));

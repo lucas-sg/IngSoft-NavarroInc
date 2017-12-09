@@ -95,7 +95,8 @@ public class HomeFrame {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 800, 600);
+		frame.setSize(800, 600);
+		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel basePane = new JPanel(new BorderLayout(0,0));

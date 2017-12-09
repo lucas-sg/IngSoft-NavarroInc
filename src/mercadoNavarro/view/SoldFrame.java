@@ -83,7 +83,7 @@ public class SoldFrame {
 	 */
 	private void initialize(Seller seller) {
 		frame = new JFrame();
-		frame.setBounds(300, 300, 800, 600);
+		frame.setBounds(400, 300, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		this.seller = DBDataFacade.getFullSeller(seller.geteMail());

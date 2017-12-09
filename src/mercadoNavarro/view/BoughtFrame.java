@@ -84,7 +84,7 @@ public class BoughtFrame {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(300, 300, 800, 600);
+		frame.setBounds(400, 300, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		JPanel basePane = new JPanel(new BorderLayout(0,0));

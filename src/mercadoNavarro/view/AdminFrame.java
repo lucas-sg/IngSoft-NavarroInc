@@ -53,7 +53,9 @@ public class AdminFrame {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(200, 200, 800, 600);
+		frame.setBounds(200, 200, 400, 600);
+		frame.setLocationRelativeTo(null);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		JPanel basePane = new JPanel(new BorderLayout(0,0));
@@ -97,7 +99,7 @@ public class AdminFrame {
 					}
 				});
 			}
-			panel.setBorder(new MatteBorder(1, 1, 1, 1, Color.GRAY));
+	
 			add(new JScrollPane(panel));
 		}
 	}

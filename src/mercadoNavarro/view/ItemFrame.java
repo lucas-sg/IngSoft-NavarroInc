@@ -58,7 +58,7 @@ public class ItemFrame {
 	 */
 	private void initialize(int itemId) {
 		frame = new JFrame();
-		frame.setBounds(200, 200, 800, 600);
+		frame.setBounds(200, 300, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		this.item = DBDataFacade.getItem(itemId);
