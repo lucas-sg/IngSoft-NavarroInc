@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
@@ -184,6 +185,21 @@ public class HomeFrame {
 	                }
 	            });
 			}
+			
+			JButton logOutBtn = new JButton("Log Out");
+			buttons.add(logOutBtn);
+			
+			logOutBtn.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent arg0) {
+                    for (Window window : Window.getWindows()) {
+                    	window.setVisible(false);
+                    	window.dispose();
+                    }
+                    	
+                    LoginFrame window = new LoginFrame();
+					window.frame.setVisible(true);
+                }
+            });
 			
 			panel.add(helloMsg, BorderLayout.LINE_START);
 			panel.add(buttons, BorderLayout.LINE_END);
