@@ -169,10 +169,12 @@ public class ForSaleFrame {
 						Runnable action = new Runnable() {
 							public void run() {
 								try {
-									seller.removeItemForSale(item);
-									mainList.remove(panel);
-									frame.validate();
-									frame.repaint();
+									if(DBDataFacade.deleteItem(item)) {
+										seller.removeItemForSale(item);
+										mainList.remove(panel);
+										frame.validate();
+										frame.repaint();
+									}
 								} catch (Exception e) {
 									e.printStackTrace();
 								}

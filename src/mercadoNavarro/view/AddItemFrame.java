@@ -1,14 +1,6 @@
 package mercadoNavarro.view;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JLabel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DefaultFormatter;
 
@@ -17,17 +9,11 @@ import mercadoNavarro.model.Item;
 import mercadoNavarro.model.Seller;
 import mercadoNavarro.model.User;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
+import java.util.LinkedList;
 
 
 public class AddItemFrame {
@@ -91,16 +77,25 @@ public class AddItemFrame {
 	}
 
 	public class InfoPane extends JPanel {
-		private JTextField Nombre;
-		private JTextField Pickup;
-		private JTextField Precio;
-		private JTextField Fotos;
+		JTextField Nombre;
+		JTextField Pickup;
+		JTextField Precio;
+		JTextArea Caracteristicas;
+		JTextField Fotos;
+		JSpinner quantity;
+		JLabel error;
 
 		/**
 		 * Create the panel.
 		 */
 		public InfoPane() {
 			setLayout(null);
+
+			error = new JLabel();
+			error.setBounds(176, 280, 250, 22);
+			error.setHorizontalAlignment(SwingConstants.LEFT);
+			error.setForeground(Color.RED);
+			add(error);
 			
 			JLabel lblNewLabel = new JLabel("Name");
 			lblNewLabel.setBounds(10, 54, 156, 16);
@@ -142,7 +137,7 @@ public class AddItemFrame {
 						for (File file : chooser.getSelectedFiles()) {
 							if (i != 0)
 								sb.append("; ");
-							sb.append(file.getName());
+							sb.append(file.getAbsoluteFile());
 							i++;
 						}
 						Fotos.setText(new String(sb));
@@ -158,7 +153,7 @@ public class AddItemFrame {
 			lblPrecio.setBounds(10, 258, 156, 16);
 			add(lblPrecio);
 			
-			JTextArea Caracteristicas = new JTextArea();
+			Caracteristicas = new JTextArea();
 			//Caracteristicas.setBounds(176, 80, 387, 50);
 			Caracteristicas.setRows(3);
 			Caracteristicas.setLineWrap(true);
@@ -189,7 +184,7 @@ public class AddItemFrame {
 			Precio.setColumns(10);
 					
 			SpinnerModel model = new SpinnerNumberModel(new Integer(1), new Integer(1), new Integer(Integer.MAX_VALUE), new Integer(1));
-			final JSpinner quantity = new JSpinner(model);
+			quantity = new JSpinner(model);
 		    JComponent comp = quantity.getEditor();
 		    JFormattedTextField field = (JFormattedTextField) comp.getComponent(0);
 		    DefaultFormatter formatter = (DefaultFormatter) field.getFormatter();
@@ -203,7 +198,86 @@ public class AddItemFrame {
 				quantity.setValue(new Integer(item.getStock()));
 				Pickup.setText(item.getPickup());
 				Precio.setText(String.format("%.2f", item.getPrice()));
-			}
+				Fotos.setText(".");
+				Fotos.setEnabled(false);
+				chooser.setEnabled(false);
+
+				Confirm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					Runnable action = new Runnable() {
+						public void run() {
+							try {
+								boolean dataValid = false;
+								if(checkFields()) {
+									item.setName(Nombre.getText());
+									item.setDescription(Caracteristicas.getText());
+									item.setPickup(Pickup.getText());
+									item.setPrice(Double.parseDouble(Precio.getText()));
+									item.setStock(Integer.parseInt(quantity.getValue().toString()));
+									dataValid = DBDataFacade.modifyItem(item);
+									if(dataValid) {
+										frame.setVisible(false); //you can't see me!
+										frame.dispose(); //Destroy the JFrame object
+									}
+									else
+										error.setText("Invalid data or connection error");
+								}
+								else
+									error.setText("All fields are required");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					};
+
+					ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+					loading.setLocationRelativeTo(frame);
+					loading.setVisible(true);
+				}
+			});
+		}
+			else {
+				Confirm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					Runnable action = new Runnable() {
+						public void run() {
+							try {
+								boolean dataValid = false;
+								if(checkFields()) {
+									LinkedList<String> gallery = new LinkedList<>();
+ 									for (String foto: Fotos.getText().split(";")) {
+										gallery.add(foto.trim());
+									}
+									Item i = new Item(seller,Nombre.getText(),Caracteristicas.getText(),Integer.parseInt(quantity.getValue().toString()),
+											Pickup.getText(), Double.parseDouble(Precio.getText()), gallery);
+									dataValid = DBDataFacade.addItem(i);
+									if(dataValid) {
+										frame.setVisible(false); //you can't see me!
+										frame.dispose(); //Destroy the JFrame object
+									}
+									else
+										error.setText("Invalid data or connection error");
+								}
+								else
+									error.setText("All fields are required");
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					};
+
+					ProgressDialog loading = new ProgressDialog(frame, action, "Loading...");
+					loading.setLocationRelativeTo(frame);
+					loading.setVisible(true);
+				}
+			});
+		}
+	}
+		public boolean checkFields() {
+			if(Nombre.getText().trim().equals("") || Pickup.getText().trim().equals("") || Precio.getText().trim().equals("") || Caracteristicas.getText().trim().equals("") ||
+					Fotos.getText().trim().equals(""))
+				return false;
+			return true;
 		}
 	}
 }

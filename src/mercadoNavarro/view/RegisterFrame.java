@@ -205,7 +205,7 @@ public class RegisterFrame {
 				  public void actionPerformed(ActionEvent e) {
 					    int returnVal = chooser.showOpenDialog(frame);
 					    if(returnVal == JFileChooser.APPROVE_OPTION) {
-					    	foto.setText(chooser.getSelectedFile().getName());
+					    	foto.setText(chooser.getSelectedFile().getAbsolutePath());
 					    }
 				  }
 			});
