@@ -41,7 +41,7 @@ public class LoginFrame {
      */
     private void initialize() {
         frame = new JFrame();
-        frame.setSize(400, 350);
+        frame.setSize(400, 300);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -151,9 +151,18 @@ public class LoginFrame {
             });
 
 			/*JLabel logo = new JLabel("");
-            logo.setIcon(new ImageIcon("C:\\Users\\Rodrigo Navarro\\Desktop\\Coin.png"));
+            logo.setIcon(new ImageIcon("./assets/logomn.png"));
 			logo.setBounds(114, 30, 277, 64);
 			add(logo);*/
+			
+			ImageIcon imgIcon = new ImageIcon("./assets/logomn.png");
+			Image image = imgIcon.getImage(); // transform it 
+			Image newimg = image.getScaledInstance(400, 115,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+			imgIcon = new ImageIcon(newimg);  // transform it back
+			JLabel logo = new JLabel();
+			logo.setBounds(0, 0, 400, 115);
+			logo.setIcon(imgIcon);
+			add(logo);
         }
     }
 
